@@ -1,43 +1,46 @@
-require('./webpack/index.css');
 const movement = require("./movement");
 const generators = require('./generators');
 const engine = require('./engine');
-const CONST = require("./constants");
+const CONSTANTS = require("./constants");
 
 // Setup the game object. This will be the 'source of thruth' throughout the game
+window.game = {};
+window.game.CONSTANTS = CONSTANTS;
 window.game = {
-  width: CONST.SETTINGS.RESOLUTION.WIDTH,
-  height: CONST.SETTINGS.RESOLUTION.HEIGHT,
-  map: generators.map(),
-  texmap: generators.textures(),
-  ctx: document.getElementById("game").getContext("2d"),
+  CONSTANTS: window.game.CONSTANTS,
+  width: window.game.CONSTANTS.SETTINGS.RESOLUTION.WIDTH,
+  height: window.game.CONSTANTS.SETTINGS.RESOLUTION.HEIGHT,
   player: {
-    x: CONST.SETTINGS.START.X,
-    y: CONST.SETTINGS.START.Y,
-    z: CONST.SETTINGS.START.Z,
+    x: window.game.CONSTANTS.SETTINGS.START.X,
+    y: window.game.CONSTANTS.SETTINGS.START.Y,
+    z: window.game.CONSTANTS.SETTINGS.START.Z,
     velocity: 0,
     pitch: Math.cos(4.6),
     yaw: Math.PI / 2,
   },
+  map: generators.map(),
+  texmap: generators.textures(),
+  ctx: document.getElementById("game").getContext("2d"),
+  fps: 0,
 };
+window.game._map = generators.map(); // original map. used for making a diff
 
 document.addEventListener('DOMContentLoaded', () => {
   const { game } = window;
-  const { width, height, ctx } = window.game;
+  const { width, height, ctx, CONSTANTS } = window.game;
   
   // Resolution setup
-  const viewportWidth = width * CONST.SETTINGS.RESOLUTION.SCALE;
-  const viewportHeight = height * CONST.SETTINGS.RESOLUTION.SCALE;
   const canvas = document.querySelector('#game');
-  canvas.width = CONST.SETTINGS.RESOLUTION.WIDTH;
-  canvas.height = CONST.SETTINGS.RESOLUTION.HEIGHT;
-  canvas.setAttribute('style', `width: ${viewportWidth}px; height: ${viewportHeight}px`);
+  canvas.width = width;
+  canvas.height = height;
+  canvas.setAttribute(
+    'style',
+    `width: ${width * CONSTANTS.SETTINGS.RESOLUTION.SCALE}px; height: ${height * CONSTANTS.SETTINGS.RESOLUTION.SCALE}px`
+  );
 
   // Canvas setup
   game.pixels = ctx.createImageData(width, height);
-  for (let i = 0; i < width * height; i++) { 
-    game.pixels.data[i * 4 + 3] = 255; // Set Opacity for screen
-  }
+  game.pixels.data.fill(255); // Set Opacity for screen
   
   // Game Bootstrap
   movement.init();

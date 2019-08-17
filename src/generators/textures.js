@@ -1,5 +1,6 @@
 module.exports = () => {
-  const texmap = new Array(16 * 16 * 3 * 16);
+  const texmap = new Array(12288); // 16 * 16 * 3 * 16
+
   // 0 = air - Do not consume this slot
   // 1 = grass-topped dirt
   // 2 = dirt - Do not consume this slot.
@@ -27,21 +28,17 @@ module.exports = () => {
         let color = 0x966c4a; // #966c4a
         let varientB = varientA;
         if (y >= 32) varientB /= 2; // side of block
-        if ((textureIndex != 4 && textureIndex != 6) || ((Math.random() * 3) | 0) === 0) {
+        if ((textureIndex != 4 && textureIndex != 6) || ((Math.random() * 3) | 0) === 0)
           varientA = 255 - ((Math.random() * 96) | 0);
-        }
 
         // 0 = air - Do not consume this slot
 
         // 1 = grass-topped dirt
         if (textureIndex == 1) {
-          if (y < (((x * x * 3 + x * 81) >> 2) & 3) + 18) {
-            // Top of grass block
-            color = 0x6aaa40; // #6aaa40
-          } else if (textureIndex == 1 && y < (((x * x * 3 + x * 81) >> 2) & 3) + 19) {
-            // Edge of grassblock. Set transparency of pixel to 'blend' into dirt
-            varientA = varientA * 2 / 3;
-          }
+          if (y < (((x * x * 3 + x * 81) >> 2) & 3) + 18)
+            color = 0x6aaa40; // #6aaa40 Top of grass block
+          else if (textureIndex == 1 && y < (((x * x * 3 + x * 81) >> 2) & 3) + 19)
+            varientA = varientA * 2 / 3; // Edge of grassblock. Set transparency of pixel to 'blend' into dirt
         }
 
         // 2 = dirt - Do not consume this slot.
@@ -49,33 +46,25 @@ module.exports = () => {
         // 3 - glass
         if (textureIndex == 3) {
           color = 0xdedede; // #ddd
-          if ((x > 0 && x < 15) && ((y > 0 && y < 15) || (y > 16 && y < 31))) {
-            varientB = 0;
-          }
+          if ((x > 0 && x < 15) && ((y > 0 && y < 15) || (y > 16 && y < 31))) varientB = 0;
         }
 
         // 4 = stone
-        if (textureIndex == 4) {
-          color = 0x7f7f7f; // #7f7f7f
-        }
+        if (textureIndex == 4) color = 0x7f7f7f; // #7f7f7f
 
         // 5 = brick-block
         if (textureIndex == 5) {
           color = 0xb53a15; // #b53a15
-          if ((x + (y >> 2) * 4) % 8 === 0 || y % 4 === 0) {
-            color = 0xbcafa5; // #bcafa5
-          }
+          if ((x + (y >> 2) * 4) % 8 === 0 || y % 4 === 0) color = 0xbcafa5; // #bcafa5
         }
 
         // 6 = wooden plank
         if (textureIndex == 6) {
           color = 0xa0824b; // #a0824b
-          if (((Math.random() * 16) | 0) === 0) {
+          if (((Math.random() * 16) | 0) === 0)
             varientA = 255 - ((Math.random() * 96) | 0);
-          }
-          if (y % 4 === 0) {
+          if (y % 4 === 0)
             varientB = 132;
-          }
         }
         
         // 7 = log
@@ -91,9 +80,10 @@ module.exports = () => {
             if (yd > xd) xd = yd;
 
             varientA = 196 - ((Math.random() * 32) | 0) + xd % 3 * 32;
-          } else if (((Math.random() * 2) | 0) === 0) {
+          } 
+          else if (((Math.random() * 2) | 0) === 0) {
             // side of the log
-            varientA = varientA * (150 - (x & 1) * 100) / 100;
+            varientA = varientA * (140 - (x & 1) * 100) / 100;
           }
         }
 
@@ -107,28 +97,20 @@ module.exports = () => {
           }
         }
 
-        // 9 = blue cloth
-        if (textureIndex == 9) {
-          color = 0x4040ff; // #4040ff
-        }
+        // 9 = water
+        if (textureIndex == 9) color = 0x4040ff; // #4040ff
 
         // 10 = sponge – yellow replacement
         if (textureIndex == 10) {
           color = 0xd9d85e; // #d9d85e
-          if (Math.random() * 16 < 1) {
-            varientB = 92 - (x * 4);
-          }
+          if (Math.random() * 16 < 1) varientB = 92 - (x * 4);
         }
         
         // 11 = red cloth
-        if (textureIndex == 11) {
-          color = 0xf13e42; // #f13e42
-        }
+        if (textureIndex == 11) color = 0xf13e42; // #f13e42
 
         // 12 = green block
-        if (textureIndex == 12) {
-          color = 0x31df31; // #31df31
-        }
+        if (textureIndex == 12) color = 0x31df31; // #31df31
 
         // 13 = sand
         if (textureIndex == 13) {
@@ -140,9 +122,7 @@ module.exports = () => {
 
         const oreLogic = oreColor => {
           if ((x > 2 && x < 13) && ((y > 2 && y < 13) || y > 18 && y < 29)) {
-            if (Math.random() * 4 < 1) {
-              color = oreColor;
-            } 
+            if (Math.random() * 4 < 1) color = oreColor;
           }
         }
         // // 14 = gold ore

@@ -1,10 +1,19 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>PureJSCraft</title>
-</head>
-<body> 
-  <canvas id="game"></canvas>
-  <div class="crosshair"></div>
-</body>
-</html>
+<!DOCTYPE html><html><head><style>
+body{background:#DDD}
+canvas{image-rendering:pixelated}
+
+.crosshair {
+  background-color: red;
+  width: 5px;
+  height: 5px;
+  display: inline-block;
+  position: absolute;
+  top: 240px;
+  left: 320px;
+}
+</style>
+</head><body> 
+  <canvas id=game></canvas>
+  <div class=crosshair></div>
+  <div id="fps">0</div>
+</body></html>

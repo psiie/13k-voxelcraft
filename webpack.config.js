@@ -39,8 +39,8 @@ const config = {
   },
   plugins: [
     HtmlWebpackPluginConfig,
-    // new MinifyPlugin({}),
-    // new webpack.optimize.UglifyJsPlugin({ mangle: false, sourcemap: false })
+    new MinifyPlugin({}),
+    new webpack.optimize.UglifyJsPlugin({ mangle: false, sourcemap: false })
   ]
 };
 

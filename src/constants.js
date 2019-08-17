@@ -1,5 +1,7 @@
-const constants = {
+module.exports = {
   SETTINGS: {
+    MAP_SIZE: 256,
+    MAX_FPS: 60,
     /* Width & Height to render the game at. Scale enlarges the size of the canvas
     by multiplying itself by WIDTH/HEIGHT. Essentially reducting the resolution.
     
@@ -14,7 +16,7 @@ const constants = {
     // Starting position of the plater
     START: {
       X: 32.5,
-      Y: 32.5,
+      Y: 10.5,
       Z: 32.5,
     },
   },
@@ -29,6 +31,3 @@ const constants = {
     JUMP_STR_AMP: 0.0010
   }
 };
-
-window.constants = constants;
-module.exports = constants;
