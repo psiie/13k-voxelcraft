@@ -1,7 +1,15 @@
+const { dlog } = require('../utils');
+
 const RENDER_DISTANCE = 32;
 const CONTRAST = 255 * 192;
 let scanlinesEnabled = false;
 let scanline = 0; // 0 or 1. determines startine line.
+
+// can simplify to bool to save space.
+let waterAnimate = 0;
+setInterval(() => {
+  waterAnimate = (waterAnimate + 1) % 3;
+}, 1000);
 
 function calcArcFromLength(step, length) {
   const half = length / 2;
@@ -90,7 +98,7 @@ function render() {
 
         /* where to start/stop rendering. Faces offset when wrong */
         let xp = player.x + xd * initial;
-        let yp = player.y + yz * initial;
+        let yp = (player.y + yz * initial);
         let zp = player.z + zd * initial;
 
         // faces go missing in certain cardinal directions when not subtracted
@@ -127,6 +135,9 @@ function render() {
             const cc = texmap[u + v * 16 + texture * 256 * 3];
             if (cc > 0) {
               col = cc;
+              if (texture === 9) {
+                col = texmap[u + v * (waterAnimate+1)*16 + texture * 256 * 3];
+              }
               brightness = 255 - (dimension + 2) % 3 * 50;
               renderDistance = distance;
             }

@@ -98,7 +98,11 @@ module.exports = () => {
         }
 
         // 9 = water
-        if (textureIndex == 9) color = 0x4040ff; // #4040ff
+        // todo: animate water
+        if (textureIndex == 9) {
+          color = 0x4060ff; // #4060ff #4040ff
+          varientB = ((Math.random() * 32) | 0) + 192
+        }
 
         // 10 = sponge – yellow replacement
         if (textureIndex == 10) {
