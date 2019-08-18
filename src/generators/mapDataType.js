@@ -1,5 +1,5 @@
 module.exports = () => {
-  const MAP_SIZE = window.game.CONSTANTS.SETTINGS.MAP_SIZE;
+  const MAP_SIZE = window.game.CONST.MAP_SIZE;
 
   return (
     new Array(MAP_SIZE).fill(0).map(

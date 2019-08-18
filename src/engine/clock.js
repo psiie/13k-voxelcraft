@@ -6,7 +6,6 @@ let pid; // useful for pausing
 function drawTextureIcon(textureIndex, xStart, yStart) {
   const { pixels, texmap, width } = window.game;
 
-  // for (let y = 0; y < 16 * 3; y++) { // debug. enable to see extended texture sides
   for (let y = 0; y < 16; y++) {
     for (let x = 0; x < 16; x++) {
       const texturePixel = texmap[x + (y+16) * 16 + textureIndex * 256 * 3];
@@ -61,7 +60,7 @@ function tick() {
 /* on supported browsers, use requestAnimationFrame for optimizations */
 let lastAnimatedTime = 0;
 function checkAnimationFrameTime(time) {
-  const { MAX_FPS } = window.game.CONSTANTS.SETTINGS;
+  const { MAX_FPS } = window.game.CONST;
   const requiredTimeDiff = 1000 / MAX_FPS;
   const diff = time - lastAnimatedTime;
 

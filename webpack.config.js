@@ -26,7 +26,7 @@ const config = {
           {
             loader: "babel-loader",
             options: {
-              presets: [["es2015"]]
+              presets: [["latest"]]
             }
           }
         ]

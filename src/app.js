@@ -1,19 +1,22 @@
 const movement = require("./movement");
 const generators = require('./generators');
 const engine = require('./engine');
-const CONSTANTS = require("./constants");
+const CONST = require("./constants");
+
+const { WIDTH, HEIGHT } = CONST.RES;
 
 // Setup the game object. This will be the 'source of thruth' throughout the game
-window.game = {};
-window.game.CONSTANTS = CONSTANTS;
+window.game = { CONST };
+
+const start = window.game.CONST.MAP_SIZE / 2 | 0;
 window.game = {
-  CONSTANTS: window.game.CONSTANTS,
-  width: window.game.CONSTANTS.SETTINGS.RESOLUTION.WIDTH,
-  height: window.game.CONSTANTS.SETTINGS.RESOLUTION.HEIGHT,
+  CONST: CONST,
+  width: WIDTH,
+  height: HEIGHT,
   player: {
-    x: window.game.CONSTANTS.SETTINGS.MAP_SIZE / 2 | 0,
+    x: start,
     y: 0,
-    z: window.game.CONSTANTS.SETTINGS.MAP_SIZE / 2 | 0,
+    z: start,
     velocity: 0,
     pitch: Math.cos(4.6),
     yaw: Math.PI / 2,
@@ -27,7 +30,7 @@ window.game._map = generators.map(); // original map. used for making a diff
 
 document.addEventListener('DOMContentLoaded', () => {
   const { game } = window;
-  const { width, height, ctx, CONSTANTS } = window.game;
+  const { width, height, ctx, CONST } = game;
   
   // Resolution setup
   const canvas = document.querySelector('#game');
@@ -35,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
   canvas.height = height;
   canvas.setAttribute(
     'style',
-    `width: ${width * CONSTANTS.SETTINGS.RESOLUTION.SCALE}px; height: ${height * CONSTANTS.SETTINGS.RESOLUTION.SCALE}px`
+    `width: ${width * CONST.RES.SCALE}px; height: ${height * CONST.RES.SCALE}px`
   );
 
   // Canvas setup

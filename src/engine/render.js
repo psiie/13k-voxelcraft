@@ -1,4 +1,4 @@
-const { dlog } = require('../utils');
+const { dlog, getBlock } = require('../utils');
 
 const RENDER_DISTANCE = 32;
 const CONTRAST = 255 * 192;
@@ -35,7 +35,7 @@ function setPixelColor(x, y, brightness, col) {
 }
 
 function render() {
-  const { ctx, map, texmap, pixels, width, height, player, CONSTANTS, fps } = window.game;
+  const { ctx, map, texmap, pixels, width, height, player, CONST, fps } = window.game;
   
   // calculate camera rotation
   const yCos = Math.cos(player.pitch);
@@ -113,9 +113,9 @@ function render() {
 
         // the ray
         let distance = ll * initial; // distance === 0-2
-        const mapSize = CONSTANTS.SETTINGS.MAP_SIZE - 1;
+        const mapSize = CONST.MAP_SIZE - 1;
         while (distance < renderDistance) {
-          let texture = map[xp & mapSize][yp & 63][zp & mapSize];
+          let texture = getBlock(xp & mapSize, yp & 63, zp & mapSize);
           if (zp > mapSize || yp > 63 || xp > mapSize || zp < 0 || yp < 0 || xp < 0) {
             texture = 0; // Only render the playable cube. Dont loop
           }

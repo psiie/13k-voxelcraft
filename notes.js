@@ -21,3 +21,17 @@ window.getMap = () => {
 
   return final;
 }
+
+
+function neighborCheck(xyz, desiredBlock) { // check if xyz is next to type block
+  const { map } = window.game;
+  const [xStart, yStart, zStart] = xyz;
+  
+  for (let z=-1; z<2; z++) {
+    for (let x=-1; x<2; x++) {
+      if (!z && !x) break;
+      const block = map[xStart + x][yStart][zStart + z];
+      if (block === desiredBlock) return true;
+    }
+  }
+}

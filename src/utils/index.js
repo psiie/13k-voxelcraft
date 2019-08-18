@@ -37,7 +37,23 @@ function drawAllTextures() {
   }
 }
 
+
+function getBlock(x, y, z) {
+  try{
+    return window.game.map[x|0][y|0][z|0]
+  } catch(e) {} // eslint-disable-line no-empty
+}
+
+function setBlock(x, y, z, block, map, notBlock) {
+  map = map || window.game.map;
+  try {
+    if (map[x][y][z] !== notBlock) map[x][y][z] = block;
+  } catch(e) {} // eslint-disable-line no-empty
+}
+
 module.exports = {
   dlog,
   drawAllTextures,
+  getBlock,
+  setBlock,
 };

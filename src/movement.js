@@ -1,50 +1,50 @@
-const { BLOCKS, PLAYER_HEIGHT, GRAVITY } = require("./constants");
+const { getBlock } = require('./utils');
 
 const keyState = {
-  forward: false,
-  backward: false,
-  strafeLeft: false,
-  strafeRight: false,
-  jump: false,
-  jumping: false
+  forward: 0,
+  backward: 0,
+  strafeLeft: 0,
+  strafeRight: 0,
+  jump: 0,
+  jumping: 0
 };
 
 module.exports = {
   applyGravity: () => {
-    const { player, map } = window.game;
-    const x = player.x;
-    const y = player.y + 2;
-    const z = player.z;
-    const feet = map[x | 0][y | 0][z | 0];
+    const { AMP, STR } = window.game.CONST.JMP;
+    const { player } = window.game;
+    let { x, y, z } = player;
+    y += 2;
+    const feet = getBlock(x,y,z);
 
     // is standing. start jump
     if (keyState.jump && feet > 0) {
-      player.velocity = -GRAVITY.JUMP_STR;
-      keyState.jumping = true;
+      player.velocity = -STR;
+      keyState.jumping = 1;
     }
 
     // if ascending
     if (keyState.jumping) {
-      player.velocity += player.velocity + (GRAVITY.JUMP_STR + GRAVITY.JUMP_STR_AMP);
+      player.velocity += player.velocity + STR + AMP;
       if (player.velocity > 0) {
         player.velocity = 0;
-        keyState.jumping = false;
+        keyState.jumping = 0;
       }
 
       // check that next position is safe
-      const nextPosition = map[x | 0][(player.y + player.velocity) | 0][z | 0]; // calculate head
-      if (nextPosition === 0) player.y += player.velocity;
+      const nextPosition = getBlock(x,player.y + player.velocity, z); // calculate head
+      if (nextPosition == 0) player.y += player.velocity;
       return;
     }
 
     // if decending (feet in air)
-    if (feet === 0) {
+    if (feet == 0) {
       if (player.velocity < 3) player.velocity += 0.2; // if not at terminal velocity, increase velocity
 
       // check that next position is safe
       const nextY = player.y + (0.1 * player.velocity);
-      const nextPosition = map[x | 0][Math.ceil(nextY) + 1][z | 0]; // calculate feet
-      player.y = nextPosition === 0 ? nextY : nextY | 0;
+      const nextPosition = getBlock(x, Math.ceil(nextY) + 1, z); // calculate feet
+      player.y = nextPosition == 0 ? nextY : nextY | 0;
       return;
     }
 
@@ -53,7 +53,7 @@ module.exports = {
   },
 
   calculateMovement: () => {
-    const { player, map } = window.game;
+    const { player } = window.game;
     
     if (
       !keyState.forward &&
@@ -63,144 +63,108 @@ module.exports = {
     ) return;
     
     let x = player.x;
-    let y = player.y + PLAYER_HEIGHT;
+    let y = player.y + 1.8; // 1.8 is player height. 1.8 meters
     let z = player.z;
+    const playerYawSin = Math.sin(player.yaw) / 8;
+    const playerYawCos = Math.cos(player.yaw) / 8;
     if (keyState.forward) {
-      x += Math.sin(player.yaw) / 8;
-      z += Math.cos(player.yaw) / 8;
+      x += playerYawSin;
+      z += playerYawCos;
     } else if (keyState.backward) {
-      x -= Math.sin(player.yaw) / 8;
-      z -= Math.cos(player.yaw) / 8;
+      x -= playerYawSin;
+      z -= playerYawCos;
     }
     
+    const playerYawHalfPI = player.yaw - Math.PI / 2;
+    const playerYawHalfPISin = Math.sin(playerYawHalfPI) / 8;
+    const playerYawHalfPICos = Math.cos(playerYawHalfPI) / 8;
     if (keyState.strafeLeft) {
-      x += Math.sin(player.yaw - Math.PI / 2) / 8;
-      z += Math.cos(player.yaw - Math.PI / 2) / 8;
+      x += playerYawHalfPISin;
+      z += playerYawHalfPICos;
     } else if (keyState.strafeRight) {
-      x -= Math.sin(player.yaw - Math.PI / 2) / 8;
-      z -= Math.cos(player.yaw - Math.PI / 2) / 8;
+      x -= playerYawHalfPISin;
+      z -= playerYawHalfPICos;
     }
 
     // detect collision via cube instead of exact coord.
-    const inBlock = map[x | 0][y | 0][z | 0];
-    if (inBlock === 0) {
+    const inBlock = getBlock(x,y,z);
+    if (inBlock == 0) {
       player.x = x;
       player.z = z;
     } else {
-      const inBlockX = map[x | 0][y | 0][player.z | 0];
-      const inBlockZ = map[player.x | 0][y | 0][z | 0];
-      if (inBlockX === 0) player.x = x;
-      else if (inBlockZ === 0) player.z = z;
+      const inBlockX = getBlock(x, y, player.z);
+      const inBlockZ = getBlock(player.x, y, z);
+      if (inBlockX == 0) player.x = x;
+      else if (inBlockZ == 0) player.z = z;
     }
   },
   
   init: () => {
     const { player, map } = window.game;
+    const eL = document.addEventListener;
+    const $game = document.getElementById("game");
 
-    function changeCallback(e) {
-      var canvas = document.getElementById("game");
-      const havePointer =
-        document.pointerLockElement === canvas ||
-        document.mozPointerLockElement === canvas ||
-        document.webkitPointerLockElement === canvas;
-      if (havePointer) {
-        document.addEventListener("mousemove", moveCallback, false);
-      } else {
-        document.removeEventListener("mousemove", moveCallback, false);
-      }
-    }
-
-    function moveCallback(event) {
-      var movementX =
-        event.movementX || event.mozMovementX || event.webkitMovementX || 0;
-
-      var movementY =
-        event.movementY || event.mozMovementY || event.webkitMovementY || 0;
+    const moveCallback = e => {
+      var movementX = e.movementX || e.mozMovementX || e.webkitMovementX || 0;
+      var movementY = e.movementY || e.mozMovementY || e.webkitMovementY || 0;
 
       player.yaw = (player.yaw + movementX / 500) % 7.855;
       player.pitch = player.pitch - movementY / 1000;
-      if (player.pitch < -Math.PI / 2) player.pitch = -Math.PI / 2;
-      if (player.pitch > Math.PI / 2) player.pitch = Math.PI / 2;
+      const hPI = Math.PI / 2,
+            nhPI = -hPI;
+      if (player.pitch < nhPI) player.pitch = nhPI;
+      if (player.pitch > hPI) player.pitch = hPI;
     }
 
-    function captureMouseCB() {
-      var canvas = document.getElementById("game");
-      canvas.requestPointerLock =
-        canvas.requestPointerLock ||
-        canvas.mozRequestPointerLock ||
-        canvas.webkitRequestPointerLock;
-      canvas.requestPointerLock();
-    }
+    $game.addEventListener("click", () => {
+      $game.requestPointerLock = $game.requestPointerLock ||
+      $game.mozRequestPointerLock ||
+      $game.webkitRequestPointerLock;
+      $game.requestPointerLock();
+    });
 
-    function keyDownCB(event) {
-      switch (event.keyCode) {
-        case 65:
-          keyState.strafeLeft = true;
-          break;
-        case 68:
-          keyState.strafeRight = true;
-          break;
-        case 87:
-          keyState.forward = true;
-          break;
-        case 83:
-          keyState.backward = true;
-          break;
-        case 32:
-          keyState.jump = true;
-          break;
+    eL("keydown", e => {
+      const k=e.keyCode;
+      if(k==65)keyState.strafeLeft=1;
+      else if(k==68)keyState.strafeRight=1;
+      else if(k==87)keyState.forward=1;
+      else if(k==83)keyState.backward=1;
+      else if(k==32)keyState.jump=1;
+    });
+    
+    eL("keyup", e => {
+      const k=e.keyCode;
+      if(k==65)keyState.strafeLeft=0;
+      else if(k==68)keyState.strafeRight=0;
+      else if(k==87)keyState.forward=0;
+      else if(k==83)keyState.backward=0;
+      else if(k==32)keyState.jump=0;
+    });
+    
+    eL("click", e => {
+      if (e.button != 0) return;
+      let rayX = player.x,
+          rayY = player.y,
+          rayZ = player.z;
+      for (var i = 0; i < 6 * 1000; i++) {
+        const playerPitchCos = Math.cos(player.pitch);
+        rayX += Math.sin(player.yaw) * playerPitchCos / 1000;
+        rayY -= Math.sin(player.pitch) / 1000;
+        rayZ += Math.cos(player.yaw) * playerPitchCos / 1000;
+        if (getBlock(rayX, rayY, rayZ) > 0) {
+          let currBlock = getBlock(rayX,rayY,rayZ);
+          currBlock = (currBlock + 1) % 16;
+          map[rayX | 0][rayY | 0][rayZ | 0] = currBlock || 1; // setBlock(rayX, rayY, rayZ, currBlock || 1, map);
+          return;
+        }
       }
-    }
-
-    function keyUpCB(event) {
-      switch (event.keyCode) {
-        case 65:
-          keyState.strafeLeft = false;
-          break;
-        case 68:
-          keyState.strafeRight = false;
-          break;
-        case 87:
-          keyState.forward = false;
-          break;
-        case 83:
-          keyState.backward = false;
-          break;
-        case 32:
-          keyState.jump = false;
-          break;
-      }
-    }
-
-    function mouseClickCB(event) {
-      if (event.button === 0) {
-        const findSelectedBlock = function() {
-          let rayX = player.x;
-          let rayY = player.y;
-          let rayZ = player.z;
-          for (var i = 0; i < 6 * 1000; i++) {
-            rayX += Math.sin(player.yaw) * Math.cos(player.pitch) / 1000;
-            rayY -= Math.sin(player.pitch) / 1000;
-            rayZ += Math.cos(player.yaw) * Math.cos(player.pitch) / 1000;
-            if (map[rayX | 0][rayY | 0][rayZ | 0] > 0) {
-              let currBlock = map[rayX | 0][rayY | 0][rayZ | 0];
-              currBlock = (currBlock + 1) % 16;
-              map[rayX | 0][rayY | 0][rayZ | 0] = currBlock || 1;
-              break;
-            }
-          }
-        };
-        findSelectedBlock();
-      }
-    }
-
-    document.addEventListener("pointerlockchange", changeCallback, false);
-    document.addEventListener("mozpointerlockchange", changeCallback, false);
-    document.addEventListener("webkitpointerlockchange", changeCallback, false);
-    document.getElementById("game").addEventListener("click", captureMouseCB);
-
-    document.addEventListener("keydown", keyDownCB);
-    document.addEventListener("keyup", keyUpCB);
-    document.addEventListener("click", mouseClickCB);
+    });
+    
+    ;["pointer","mozpointer","webkitpointer"] // eslint-disable-line no-extra-semi
+      .forEach(i => document.addEventListener(`${i}lockchange`, e => {
+        const { pointerLockElement, mozPointerLockElement, webkitPointerLockElement } = document;
+        const havePointer = pointerLockElement == $game || mozPointerLockElement == $game || webkitPointerLockElement == $game;
+        document[havePointer ? 'addEventListener' : 'removeEventListener']("mousemove", moveCallback);
+      }));
   }
 };
