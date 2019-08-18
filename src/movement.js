@@ -52,17 +52,18 @@ module.exports = {
       // check that next position is safe
       const nextPosition = getBlock(x,player.y + player.velocity, z); // calculate head
       if (nextPosition == 0) player.y += player.velocity;
+      else if (nextPosition == 9) player.y += player.velocity / 8;
       return;
     }
 
     // if decending (feet in air)
-    if (feet == 0) {
+    if (feet == 0 || feet == 9) {
       if (player.velocity < 3) player.velocity += 0.2; // if not at terminal velocity, increase velocity
 
       // check that next position is safe
-      const nextY = player.y + (0.1 * player.velocity);
+      const nextY = player.y + (0.1 * player.velocity / (feet == 0 ? 1 : 4));
       const nextPosition = getBlock(x, Math.ceil(nextY) + 1, z); // calculate feet
-      player.y = nextPosition == 0 ? nextY : nextY | 0;
+      player.y = (nextPosition == 0 || nextPosition == 9) ? nextY : nextY | 0;
       return;
     }
 
@@ -72,6 +73,7 @@ module.exports = {
 
   calculateMovement: () => {
     const { player } = window.game;
+    const feet = getBlock(player.x,player.y+1,player.z);
     
     if (
       !keyState.forward &&
@@ -80,11 +82,12 @@ module.exports = {
       !keyState.strafeRight
     ) return;
     
+    const speedModifier = feet == 9 ? 16 : 8;
     let x = player.x;
     let y = player.y + 1.8; // 1.8 is player height. 1.8 meters
     let z = player.z;
-    const playerYawSin = Math.sin(player.yaw) / 8;
-    const playerYawCos = Math.cos(player.yaw) / 8;
+    const playerYawSin = Math.sin(player.yaw) / speedModifier;
+    const playerYawCos = Math.cos(player.yaw) / speedModifier;
     if (keyState.forward) {
       x += playerYawSin;
       z += playerYawCos;
@@ -94,8 +97,8 @@ module.exports = {
     }
     
     const playerYawHalfPI = player.yaw - Math.PI / 2;
-    const playerYawHalfPISin = Math.sin(playerYawHalfPI) / 8;
-    const playerYawHalfPICos = Math.cos(playerYawHalfPI) / 8;
+    const playerYawHalfPISin = Math.sin(playerYawHalfPI) / speedModifier;
+    const playerYawHalfPICos = Math.cos(playerYawHalfPI) / speedModifier;
     if (keyState.strafeLeft) {
       x += playerYawHalfPISin;
       z += playerYawHalfPICos;
@@ -106,14 +109,14 @@ module.exports = {
 
     // detect collision via cube instead of exact coord.
     const inBlock = getBlock(x,y,z);
-    if (inBlock == 0) {
+    if (inBlock == 0 || inBlock == 9) {
       player.x = x;
       player.z = z;
     } else {
       const inBlockX = getBlock(x, y, player.z);
       const inBlockZ = getBlock(player.x, y, z);
-      if (inBlockX == 0) player.x = x;
-      else if (inBlockZ == 0) player.z = z;
+      if (inBlockX == 0 || inBlockX == 9) player.x = x;
+      else if (inBlockZ == 0 || inBlockZ == 9) player.z = z;
     }
   },
   
