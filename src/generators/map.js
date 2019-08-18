@@ -49,7 +49,7 @@ function growTree(map, x, y, z) {
 }
 
 module.exports = () => {
-  const { SEA_LEVEL } = window.game.CONSTANTS;
+  const { SEA_LEVEL, MAP_SCALE } = window.game.CONSTANTS;
   const { MAP_SIZE } = window.game.CONSTANTS.SETTINGS;
   const map = mapDataType();
   
@@ -61,7 +61,7 @@ module.exports = () => {
     treeMap[x] = new Array(MAP_SIZE);
     for (let z = 0; z < MAP_SIZE; z++) {
       // grass generation
-      let height = perlin(x / 15, z / 15);
+      let height = perlin(x / MAP_SCALE, z / MAP_SCALE);
       height *= 10; // hill amplitude
       height += 32;
       height = Math.floor(height);
@@ -81,10 +81,10 @@ module.exports = () => {
     for (let z = 0; z < MAP_SIZE; z++) {
       const mHeight = heightMap[x][z];
       // const 
-      map[x][mHeight][z] = mHeight < SEA_LEVEL ? 1 : 13; // fill heightmap with grass
+      map[x][mHeight][z] = mHeight <= SEA_LEVEL ? 1 : 13; // fill heightmap with grass
       for (let y = mHeight - 1; y > SEA_LEVEL; y--) map[x][y][z] = 9; // water fill 9
       for (let y = mHeight + 1; y < 64; y++) map[x][y][z] = 4; // underground fill
-      if (map[x][SEA_LEVEL + 1][z] === 1) map[x][SEA_LEVEL + 1][z] = 13; // sand on shore
+      // if (map[x][SEA_LEVEL - 1][z] === 1) map[x][SEA_LEVEL - 1][z] = 13; // sand on shore
 
       if (treeMap[x][z] <= -2 && mHeight < SEA_LEVEL) { // map[x][mHeight][z] === 1
         growTree(map, x, mHeight - 1, z);

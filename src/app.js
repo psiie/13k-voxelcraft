@@ -11,9 +11,9 @@ window.game = {
   width: window.game.CONSTANTS.SETTINGS.RESOLUTION.WIDTH,
   height: window.game.CONSTANTS.SETTINGS.RESOLUTION.HEIGHT,
   player: {
-    x: window.game.CONSTANTS.SETTINGS.START.X,
-    y: window.game.CONSTANTS.SETTINGS.START.Y,
-    z: window.game.CONSTANTS.SETTINGS.START.Z,
+    x: window.game.CONSTANTS.SETTINGS.MAP_SIZE / 2 | 0,
+    y: 0,
+    z: window.game.CONSTANTS.SETTINGS.MAP_SIZE / 2 | 0,
     velocity: 0,
     pitch: Math.cos(4.6),
     yaw: Math.PI / 2,

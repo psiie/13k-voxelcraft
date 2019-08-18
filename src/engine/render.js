@@ -135,9 +135,13 @@ function render() {
             const cc = texmap[u + v * 16 + texture * 256 * 3];
             if (cc > 0) {
               col = cc;
-              if (texture === 9) {
-                col = texmap[u + v * (waterAnimate+1)*16 + texture * 256 * 3];
+
+              // if water block, animate
+              if (texture === 9 && dimension == 1) {
+                const texId = u + v * (waterAnimate+1)*16 + texture * 256 * 3;
+                if (texId < 7680) col = texmap[texId]; // only animate topside. prevents texture sliding into next texture
               }
+
               brightness = 255 - (dimension + 2) % 3 * 50;
               renderDistance = distance;
             }
