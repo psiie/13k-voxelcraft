@@ -35,3 +35,13 @@ function neighborCheck(xyz, desiredBlock) { // check if xyz is next to type bloc
     }
   }
 }
+
+if (getBlock(rayX, rayY, rayZ) > 0) { // ray found a block
+  let currBlock = getBlock(rayX,rayY,rayZ);
+  currBlock = (currBlock + 1) % 16;
+  // map[rayX | 0][rayY | 0][rayZ | 0] = currBlock || 1; // setBlock(rayX, rayY, rayZ, currBlock || 1, map);
+  map[rayX | 0][rayY | 0][rayZ | 0] = 0; // setBlock(rayX, rayY, rayZ, currBlock || 1, map);
+  return;
+}
+
+// set pixel: (hotbarY * (width * 4)) + (hotbarX * 4);

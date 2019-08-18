@@ -48,15 +48,16 @@ function render() {
   const playerOffsetY = player.y - (player.y | 0);
   const playerOffsetZ = player.z - (player.z | 0);
 
-  scanlinesEnabled = fps < 20;
+  // scanlinesEnabled = fps < 20; // todo: enable
+  scanlinesEnabled = true;
   scanline = scanline ? 0 : 1; // fps saver
-  for (let x = scanlinesEnabled ? scanline : 0; x < width; x += scanlinesEnabled ? 2 : 1) {
+  for (let x = 0; x < width; x++) {
     // render distance
     const arcX = calcArcFromLength(x, width); // 0.0 - 1.0 float
     const biasedArcX = RENDER_DISTANCE * arcX;
     const worldxd = (x - width / 2) / height;
 
-    for (let y = 0; y < height; y++) {
+    for (let y = scanlinesEnabled ? (x % 2)+scanline : 0; y < height; y += scanlinesEnabled ? 2 : 1) {
       // render distance
       const arcY = calcArcFromLength(y, height); // 0.0 - 1.0 float
       const biasedArcY = RENDER_DISTANCE * arcY;
@@ -103,12 +104,9 @@ function render() {
 
         // faces go missing in certain cardinal directions when not subtracted
         if (dimLength < 0) {
-          if (dimension === 0) xp--;
-          if (dimension === 1) yp--;
-          if (dimension === 2) zp--;
-          //   !dimension ? xp-- : 0;
-          //   dimension == 1 ? yp-- : 0;
-          //   dimension == 2 ? zp-- : 0;
+          !dimension ? xp-- : 0;
+          dimension == 1 ? yp--:0;
+          dimension == 2 ? zp-- : 0;
         }
 
         // the ray

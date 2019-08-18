@@ -26,24 +26,25 @@ function drawTextureIcon(textureIndex, xStart, yStart) {
 }
 
 function tick() {
-  const { width, height, ctx, pixels } = window.game;
+  const { width, height, ctx, pixels, hotbarSelect } = window.game;
   window._tick += 1;
 
   movement.applyGravity();
   movement.calculateMovement();
   render();
 
+  const HOTBAR_ICON_PADDING = 2;
   const hotbarWidth = (18 * 10);
-  const hotbarHeight = 16 + 2;
+  const hotbarHeight = 16;
   const hotbarX = (width - hotbarWidth) / 2
   const hotbarY = height - hotbarHeight - 8;
   
   // debug - display all blocks on screen
-  utils.drawAllTextures();
+  // utils.drawAllTextures();
   
   // draw hotbar icons
   ;[2,3,4,5,6,7,10,11,12,13].forEach((id, idx) => {  // eslint-disable-line no-extra-semi
-    const hotbarIconIdx = hotbarX + 18 * idx
+    const hotbarIconIdx = hotbarX + (16 + HOTBAR_ICON_PADDING) * idx
     drawTextureIcon(id, hotbarIconIdx, hotbarY);
   });
 
@@ -51,10 +52,12 @@ function tick() {
   ctx.putImageData(pixels, 0, 0);
 
   // draw hotbar border
-  // ctx.lineWidth = 1;
-  // ctx.strokeStyle = "rgba(0,0,0,1)";
-  // ctx.strokeRect(hotbarX, hotbarY, hotbarWidth, hotbarHeight);
-
+  const hotbarSelectedX = hotbarX + (hotbarSelect * 18);
+  ctx.lineWidth = 1;
+  ctx.strokeStyle = `#fff`;
+  ctx.strokeRect(hotbarSelectedX + 1, hotbarY + 1, 14, hotbarHeight - 2);
+  ctx.strokeStyle = `#000`;
+  ctx.strokeRect(hotbarSelectedX, hotbarY, 16, hotbarHeight);
 }
 
 /* on supported browsers, use requestAnimationFrame for optimizations */

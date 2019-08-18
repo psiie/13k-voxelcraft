@@ -9,6 +9,24 @@ const keyState = {
   jumping: 0
 };
 
+const BLOCKS_MAP = {
+  A: [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    10,
+    11,
+    12,
+    13,
+  ],
+  B: [
+
+  ],
+}
+
 module.exports = {
   applyGravity: () => {
     const { AMP, STR } = window.game.CONST.JMP;
@@ -124,12 +142,17 @@ module.exports = {
     });
 
     eL("keydown", e => {
+      console.log('e', e.keyCode)
+      const { game } = window;
       const k=e.keyCode;
       if(k==65)keyState.strafeLeft=1;
       else if(k==68)keyState.strafeRight=1;
       else if(k==87)keyState.forward=1;
       else if(k==83)keyState.backward=1;
       else if(k==32)keyState.jump=1;
+
+      else if(k==48) game.hotbarSelect = 9;
+      else if (k>=49 && k<=57) game.hotbarSelect = k - 49;
     });
     
     eL("keyup", e => {
@@ -142,21 +165,35 @@ module.exports = {
     });
     
     eL("click", e => {
-      if (e.button != 0) return;
+      const { player, hotbarSelect } = window.game;
       let rayX = player.x,
           rayY = player.y,
           rayZ = player.z;
+      let previous = [];
       for (var i = 0; i < 6 * 1000; i++) {
         const playerPitchCos = Math.cos(player.pitch);
         rayX += Math.sin(player.yaw) * playerPitchCos / 1000;
         rayY -= Math.sin(player.pitch) / 1000;
         rayZ += Math.cos(player.yaw) * playerPitchCos / 1000;
-        if (getBlock(rayX, rayY, rayZ) > 0) {
-          let currBlock = getBlock(rayX,rayY,rayZ);
-          currBlock = (currBlock + 1) % 16;
-          map[rayX | 0][rayY | 0][rayZ | 0] = currBlock || 1; // setBlock(rayX, rayY, rayZ, currBlock || 1, map);
+
+        
+        if (getBlock(rayX, rayY, rayZ) > 0) { // ray found a block
+          // setBlock(rayX, rayY, rayZ, currBlock || 1, map);
+
+          // if left click, destroy block
+          if (e.button === 0) map[rayX | 0][rayY | 0][rayZ | 0] = 0;
+
+          // if right click, add block
+          else if (e.button === 2) {
+            const [ pRayX, pRayY, pRayZ ] = previous;
+            const blockId = BLOCKS_MAP.A[hotbarSelect];
+            map[pRayX | 0][pRayY | 0][pRayZ | 0] = blockId || 1;
+          }
+
           return;
         }
+
+        previous = [ rayX, rayY, rayZ ];
       }
     });
     

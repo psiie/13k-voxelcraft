@@ -22,5 +22,5 @@ module.exports = {
   JMP: {
     STR: 0.4,
     AMP: 0.0010
-  }
+  },
 };

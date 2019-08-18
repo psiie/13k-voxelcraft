@@ -21,6 +21,7 @@ window.game = {
     pitch: Math.cos(4.6),
     yaw: Math.PI / 2,
   },
+  hotbarSelect: 0,
   map: generators.map(),
   texmap: generators.textures(),
   ctx: document.getElementById("game").getContext("2d"),
