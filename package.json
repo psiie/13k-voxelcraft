@@ -17,7 +17,8 @@
   },
   "scripts": {
     "build": "webpack",
-    "start": "node_modules/.bin/webpack-dev-server",
+    "start": "node_modules/.bin/webpack-dev-server --progress --devtool none",
+    "dev": "node_modules/.bin/webpack-dev-server --progress --devtool inline-source-map",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

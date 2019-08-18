@@ -21,6 +21,7 @@ module.exports = {
     },
   },
   // Mapping blocks to their ID's
+  SEA_LEVEL: 30, // inverse. higher = lower sea level
   BLOCKS: {
     AIR: 0
   },
