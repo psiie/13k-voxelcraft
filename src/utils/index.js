@@ -1,16 +1,20 @@
 
+import intervalSecond from '../engine/interval';
+
+let isInside = false;
+let isInsideDebounce = false;
 let debounceLogging = false;
-function dlog(msg) {
-  function debounceLog(msg) {
-    if (debounceLogging === false) {
-      debounceLogging = true;
-      console.log(msg);
-      setTimeout(function() {
-        debounceLogging = false;
-      }, 500);
-    }
-  }
-  debounceLog(msg);
+
+intervalSecond(() => {
+  isInsideDebounce = false;
+});
+
+function dlog() {
+  if (debounceLogging) return;
+
+  debounceLogging = true;
+  console.log.apply(this, arguments); // eslint-disable-line no-console
+  setTimeout(() => debounceLogging = false, 500);
 }
 
 function drawAllTextures() {
@@ -51,9 +55,23 @@ function setBlock(x, y, z, block, map, notBlock) {
   } catch(e) {} // eslint-disable-line no-empty
 }
 
+function isInsideCheck() {
+  if (isInsideDebounce) return isInside;
+  isInsideDebounce = true;
+
+  const { x, y, z } = window.game.player;
+  for (let i=y; i>0; i--) {
+    const block = getBlock(x, i, z);
+    if (block !== 0 && block !== 8) return isInside = true;
+  }
+
+  return isInside = false;
+}
+
 module.exports = {
   dlog,
   drawAllTextures,
   getBlock: /*@__PURE__*/ getBlock,
   setBlock,
+  isInsideCheck: /*@__PURE__*/ isInsideCheck,
 };

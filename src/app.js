@@ -18,14 +18,14 @@ window.game = {
     y: 0,
     z: start,
     velocity: 0,
-    pitch: Math.cos(4.6),
-    yaw: Math.PI / 2,
+    pitch: -0.1, // Math.cos(4.6)
+    yaw: 0,
   },
   hotbarSelect: 0,
   map: generators.map(),
   texmap: generators.textures(),
   ctx: document.getElementById("game").getContext("2d"),
-  fps: 0,
+  fps: 0, 
 };
 window.game._map = generators.map(); // original map. used for making a diff
 

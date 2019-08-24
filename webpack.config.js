@@ -37,28 +37,36 @@ const config = {
       }
     ]
   },
-  plugins: [
-    HtmlWebpackPluginConfig,
-    new MinifyPlugin({}),
-    new webpack.optimize.UglifyJsPlugin({
-      sourcemap: false,
-      compress: {
-        drop_console: true,
-        keep_fargs: true, // if issues, disable
-        passes: 2,
-        unsafe: false, // todo:
-        unsafe_math: false, // can cause improper floats
-      },
-      mangle: {
-        eval: true,
-        reserved: [], // dont mangle these names
-        toplevel: true,
-      },
-      output: {
-        quote_style: 0,
-      },
-    })
-  ]
+  plugins: (() => {
+    const devPlugins = [
+      HtmlWebpackPluginConfig,
+    ];
+    const prodPlugins = [
+      new MinifyPlugin({}),
+      new webpack.optimize.UglifyJsPlugin({
+        sourcemap: false,
+        compress: {
+          // drop_console: true,
+          keep_fargs: true, // if issues, disable
+          passes: 2,
+          unsafe: false, // todo:
+          unsafe_math: false, // can cause improper floats
+        },
+        mangle: {
+          eval: true,
+          reserved: [], // dont mangle these names
+          toplevel: true,
+        },
+        output: {
+          quote_style: 0,
+        },
+      }),
+    ];
+
+    const out = devPlugins;
+    if (process.env.NODE_ENV === 'production') out.concat(prodPlugins)
+    return out;
+  })(),
 };
 
 module.exports = config;

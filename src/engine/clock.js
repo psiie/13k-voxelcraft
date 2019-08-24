@@ -1,3 +1,4 @@
+import intervalSecond from './interval';
 const movement = require("../movement");
 const { render } = require("./render");
 const utils = require('../utils');
@@ -78,12 +79,12 @@ function init() {
   window._tick = 0; // debug purposes
 
   const $fps = document.getElementById('fps');
-  setInterval(() => {
+  intervalSecond(() => {
     const fps = window._tick;
     window.game.fps = fps;
     $fps.innerText = fps.toString() + ' fps';
     window._tick = 0;
-  }, 1000);
+  });
 
   if (!window.requestAnimationFrame) setInterval(tick, 1000 / 100);
   else requestAnimationFrame(checkAnimationFrameTime);

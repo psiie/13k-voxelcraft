@@ -1,15 +1,17 @@
-const { dlog, getBlock } = require('../utils');
+import time from './time';
+import intervalSecond from './interval';
+import { getBlock, isInsideCheck } from '../utils';
 
-const RENDER_DISTANCE = 32;
-const CONTRAST = 255 * 192;
-let scanlinesEnabled = false;
-let scanline = 0; // 0 or 1. determines startine line.
+const RENDER_DISTANCE = 32,
+      CONTRAST = 255 * 192;
+let scanlinesEnabled = false,
+    scanline = 0, // 0 or 1. determines startine line.
+    waterAnimate = 0; // can simplify to bool to save space.
 
-// can simplify to bool to save space.
-let waterAnimate = 0;
-setInterval(() => {
+intervalSecond(() => {
   waterAnimate = (waterAnimate + 1) % 3;
-}, 1000);
+})
+
 
 function calcArcFromLength(step, length) {
   const half = length / 2;
@@ -21,7 +23,12 @@ function calcArcFromLength(step, length) {
 
 function setPixelColor(x, y, brightness, col) {
   const { pixels, width } = window.game;
-  const light = brightness * 255 / CONTRAST;
+  const { color } = time;
+  const isInside = isInsideCheck();
+  const timeModifier = time.timeModifier();
+  const [ skyR, skyG, skyB ] = color();
+  let light = brightness * 255 / CONTRAST;
+  if (!isInside) light = light * (1 - timeModifier / 2);
 
   let r = ((col >> 16) & 0xff) * light;
   let g = ((col >> 8) & 0xff) * light;
@@ -29,9 +36,9 @@ function setPixelColor(x, y, brightness, col) {
 
   // Sky color 144 238 255
   let pixelLocation = (x + y * width) * 4;
-  pixels.data[pixelLocation + 0] = r || 144;
-  pixels.data[pixelLocation + 1] = g || 238;
-  pixels.data[pixelLocation + 2] = b || 255;
+  pixels.data[pixelLocation + 0] = r || skyR; //144
+  pixels.data[pixelLocation + 1] = g || skyG; //238
+  pixels.data[pixelLocation + 2] = b || skyB; //255
 }
 
 function render() {
@@ -140,7 +147,9 @@ function render() {
                 if (texId < 7680) col = texmap[texId]; // only animate topside. prevents texture sliding into next texture
               }
 
-              brightness = 255 - (dimension + 2) % 3 * 50;
+              const timeModifier = time.timeModifier();
+              const distancePercent = 1 - (distance / RENDER_DISTANCE * timeModifier);
+              brightness = (255 - (dimension + 2) % 3 * 50) * (distancePercent);
               renderDistance = distance;
             }
           }

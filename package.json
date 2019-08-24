@@ -1,16 +1,15 @@
 {
-  "name": "browserCraft",
+  "name": "browser_craft",
   "version": "1.0.0",
   "description": "",
   "main": "webpack.config.js",
-  "dependencies": {
-    "babel-preset-latest": "^6.24.1"
-  },
   "devDependencies": {
+    "babel-preset-latest": "^6.24.1",
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
     "babel-minify-webpack-plugin": "^0.2.0",
     "babel-preset-es2015": "^6.24.1",
+    "cross-env": "^5.2.0",
     "css-loader": "^0.28.5",
     "html-webpack-plugin": "^2.30.1",
     "style-loader": "^0.18.2",
@@ -18,12 +17,12 @@
     "webpack-dev-server": "^2.7.1"
   },
   "scripts": {
-    "build": "webpack",
-    "start": "node_modules/.bin/webpack-dev-server --progress --devtool none",
-    "dev": "node_modules/.bin/webpack-dev-server --progress --devtool inline-source-map",
+    "build": "cross-env NODE_ENV=production webpack",
+    "start": "cross-env NODE_ENV=development webpack-dev-server --progress --devtool eval",
+    "start:preprod": "cross-env NODE_ENV=development webpack-dev-server --progress --devtool inline-source-map",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
+  "author": "Reno McKenzie",
   "license": "ISC"
 }
