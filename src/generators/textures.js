@@ -1,4 +1,4 @@
-module.exports = () => {
+module.exports = /*@__PURE__*/ () => {
   const texmap = new Array(12288); // 16 * 16 * 3 * 16
 
   // 0 = air - Do not consume this slot

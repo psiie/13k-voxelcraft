@@ -35,7 +35,7 @@ function setPixelColor(x, y, brightness, col) {
 }
 
 function render() {
-  const { ctx, map, texmap, pixels, width, height, player, CONST, fps } = window.game;
+  const { texmap, width, height, player, CONST, fps } = window.game;
   
   // calculate camera rotation
   const yCos = Math.cos(player.pitch);
@@ -53,13 +53,13 @@ function render() {
   scanline = scanline ? 0 : 1; // fps saver
   for (let x = 0; x < width; x++) {
     // render distance
-    const arcX = calcArcFromLength(x, width); // 0.0 - 1.0 float
+    const arcX = /*@__PURE__*/ calcArcFromLength(x, width); // 0.0 - 1.0 float
     const biasedArcX = RENDER_DISTANCE * arcX;
     const worldxd = (x - width / 2) / height;
 
     for (let y = scanlinesEnabled ? (x % 2)+scanline : 0; y < height; y += scanlinesEnabled ? 2 : 1) {
       // render distance
-      const arcY = calcArcFromLength(y, height); // 0.0 - 1.0 float
+      const arcY = /*@__PURE__*/ calcArcFromLength(y, height); // 0.0 - 1.0 float
       const biasedArcY = RENDER_DISTANCE * arcY;
       const arcAvg = (biasedArcX + biasedArcY) / 2;
       let renderDistance = RENDER_DISTANCE + arcAvg;

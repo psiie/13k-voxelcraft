@@ -54,6 +54,6 @@ function setBlock(x, y, z, block, map, notBlock) {
 module.exports = {
   dlog,
   drawAllTextures,
-  getBlock,
+  getBlock: /*@__PURE__*/ getBlock,
   setBlock,
 };

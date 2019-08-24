@@ -1,4 +1,4 @@
-const { getBlock } = require('./utils');
+const {  getBlock } = require('./utils');
 
 const keyState = {
   forward: 0,
@@ -33,7 +33,7 @@ module.exports = {
     const { player } = window.game;
     let { x, y, z } = player;
     y += 2;
-    const feet = getBlock(x,y,z);
+    const feet =  getBlock(x,y,z);
 
     // is standing. start jump
     if (keyState.jump && feet > 0) {
@@ -50,7 +50,7 @@ module.exports = {
       }
 
       // check that next position is safe
-      const nextPosition = getBlock(x,player.y + player.velocity, z); // calculate head
+      const nextPosition =  getBlock(x,player.y + player.velocity, z); // calculate head
       if (nextPosition == 0) player.y += player.velocity;
       else if (nextPosition == 9) player.y += player.velocity / 8;
       return;
@@ -62,7 +62,7 @@ module.exports = {
 
       // check that next position is safe
       const nextY = player.y + (0.1 * player.velocity / (feet == 0 ? 1 : 4));
-      const nextPosition = getBlock(x, Math.ceil(nextY) + 1, z); // calculate feet
+      const nextPosition =  getBlock(x, Math.ceil(nextY) + 1, z); // calculate feet
       player.y = (nextPosition == 0 || nextPosition == 9) ? nextY : nextY | 0;
       return;
     }
@@ -73,7 +73,7 @@ module.exports = {
 
   calculateMovement: () => {
     const { player } = window.game;
-    const feet = getBlock(player.x,player.y+1,player.z);
+    const feet =  getBlock(player.x,player.y+1,player.z);
     
     if (
       !keyState.forward &&
@@ -108,13 +108,13 @@ module.exports = {
     }
 
     // detect collision via cube instead of exact coord.
-    const inBlock = getBlock(x,y,z);
+    const inBlock =  getBlock(x,y,z);
     if (inBlock == 0 || inBlock == 9) {
       player.x = x;
       player.z = z;
     } else {
-      const inBlockX = getBlock(x, y, player.z);
-      const inBlockZ = getBlock(player.x, y, z);
+      const inBlockX =  getBlock(x, y, player.z);
+      const inBlockZ =  getBlock(player.x, y, z);
       if (inBlockX == 0 || inBlockX == 9) player.x = x;
       else if (inBlockZ == 0 || inBlockZ == 9) player.z = z;
     }
@@ -180,7 +180,7 @@ module.exports = {
         rayZ += Math.cos(player.yaw) * playerPitchCos / 1000;
 
         
-        if (getBlock(rayX, rayY, rayZ) > 0) { // ray found a block
+        if ( getBlock(rayX, rayY, rayZ) > 0) { // ray found a block
           // setBlock(rayX, rayY, rayZ, currBlock || 1, map);
 
           // if left click, destroy block

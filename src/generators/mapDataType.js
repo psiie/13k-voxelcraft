@@ -1,4 +1,4 @@
-module.exports = () => {
+module.exports = /*@__PURE__*/ () => {
   const MAP_SIZE = window.game.CONST.MAP_SIZE;
 
   return (
