@@ -5,6 +5,7 @@ const generators = require('./generators');
 const engine = require('./engine');
 const CONST = require("./constants");
 
+
 const { WIDTH, HEIGHT } = CONST.RES;
 
 // Setup the game object. This will be the 'source of thruth' throughout the game
@@ -51,6 +52,11 @@ document.addEventListener('DOMContentLoaded', () => {
   // Game Bootstrap
   movement.init();
   engine.clock.init();
+
+  setTimeout(() => {
+    console.log('loading...');
+    uncompress.main();
+  }, 500);
 
   window.save = compress;
   window.load = uncompress.main;
