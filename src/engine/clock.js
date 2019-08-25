@@ -1,4 +1,5 @@
 import intervalSecond from './interval';
+import { BLOCKS_MAP } from '../hotbar';
 const movement = require("../movement");
 const { render } = require("./render");
 
@@ -25,7 +26,7 @@ function drawTextureIcon(textureIndex, xStart, yStart) {
 }
 
 function tick() {
-  const { width, height, ctx, pixels, hotbarSelect } = window.game;
+  const { width, height, ctx, pixels, hotbarSide, hotbarSelect } = window.game;
   window._tick += 1;
 
   movement.applyGravity();
@@ -42,7 +43,7 @@ function tick() {
   // utils.drawAllTextures();
   
   // draw hotbar icons
-  ;[2,3,4,5,6,7,10,11,12,13].forEach((id, idx) => {  // eslint-disable-line no-extra-semi
+  BLOCKS_MAP[hotbarSide].forEach((id, idx) => {  // eslint-disable-line no-extra-semi
     const hotbarIconIdx = hotbarX + (16 + HOTBAR_ICON_PADDING) * idx
     drawTextureIcon(id, hotbarIconIdx, hotbarY);
   });

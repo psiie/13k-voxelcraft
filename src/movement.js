@@ -1,3 +1,4 @@
+import { BLOCKS_MAP } from './hotbar';
 const {  getBlock } = require('./utils');
 
 const keyState = {
@@ -8,24 +9,6 @@ const keyState = {
   jump: 0,
   jumping: 0
 };
-
-const BLOCKS_MAP = {
-  A: [
-    2,
-    3,
-    4,
-    5,
-    6,
-    7,
-    10,
-    11,
-    12,
-    13,
-  ],
-  B: [
-
-  ],
-}
 
 module.exports = {
   applyGravity: () => {
@@ -154,8 +137,10 @@ module.exports = {
       else if(k==83)keyState.backward=1;
       else if(k==32)keyState.jump=1;
 
-      else if(k==48) game.hotbarSelect = 9;
-      else if (k>=49 && k<=57) game.hotbarSelect = k - 49;
+      else if(k==48) game.hotbarSelect = 9; // number select, 0
+      else if (k>=49 && k<=57) game.hotbarSelect = k - 49; // number select. 1-9
+      
+      else if(k==69) game.hotbarSide = game.hotbarSide ? 0 : 1; // e key. switch toolbar sides
     });
     
     eL("keyup", e => {
@@ -168,7 +153,7 @@ module.exports = {
     });
     
     eL("click", e => {
-      const { player, hotbarSelect } = window.game;
+      const { player, hotbarSelect, hotbarSide } = window.game;
       let rayX = player.x,
           rayY = player.y,
           rayZ = player.z;
@@ -179,23 +164,20 @@ module.exports = {
         rayY -= Math.sin(player.pitch) / 1000;
         rayZ += Math.cos(player.yaw) * playerPitchCos / 1000;
 
-        
-        if ( getBlock(rayX, rayY, rayZ) > 0) { // ray found a block
-          // setBlock(rayX, rayY, rayZ, currBlock || 1, map);
-
-          // if left click, destroy block
-          if (e.button === 0) map[rayX | 0][rayY | 0][rayZ | 0] = 0;
-
-          // if right click, add block
-          else if (e.button === 2) {
+        // ray found a block
+        if (getBlock(rayX, rayY, rayZ) > 0) {
+          if (/* left click */ e.button === 0) map[rayX | 0][rayY | 0][rayZ | 0] = 0;
+          else if (/* right click */ e.button === 2) {
             const [ pRayX, pRayY, pRayZ ] = previous;
-            const blockId = BLOCKS_MAP.A[hotbarSelect];
+            const blockId = BLOCKS_MAP[hotbarSide][hotbarSelect];
             map[pRayX | 0][pRayY | 0][pRayZ | 0] = blockId || 1;
+            // setBlock(rayX, rayY, rayZ, currBlock || 1, map);
           }
-
           return;
         }
 
+        /* previous is used for building. It's the ray's last state before it hit a block.
+        This is the position where we will build the block at [if right clicked] */
         previous = [ rayX, rayY, rayZ ];
       }
     });

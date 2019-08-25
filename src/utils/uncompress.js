@@ -1,4 +1,3 @@
-import { stringify } from './compress';
 const LZString = require('../vendor/lz-string');
 
 /*  ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O",
@@ -7,15 +6,12 @@ const LZString = require('../vendor/lz-string');
 "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
 58 max blocks atm. extentable to 62 without rework */
 const LOOKUP_TABLE = new Array(58).fill(1).map((_,i)=>String.fromCharCode(65+i));
-const WILDCARD = '-';
-const seed = 421;
 
 function mapStringToCurrentMap(str) {
   for (let i=0; i<str.length; i++) {
     const z = i % 256;
     const y = i / 256 % 64 | 0;
     const x = i / 256 / 64 | 0;
-    if (z === 0 && y === 0) console.log('loading', x);
     
     if (str[i] !== '-') {
       const idx = LOOKUP_TABLE.indexOf(str[i]);

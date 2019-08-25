@@ -25,6 +25,7 @@ window.game = {
     yaw: 0,
   },
   hotbarSelect: 0,
+  hotbarSide: 0,
   map: generators.map(),
   texmap: generators.textures(),
   ctx: document.getElementById("game").getContext("2d"),
