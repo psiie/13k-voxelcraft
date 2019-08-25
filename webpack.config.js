@@ -63,8 +63,8 @@ const config = {
       }),
     ];
 
-    const out = devPlugins;
-    if (process.env.NODE_ENV === 'production') out.concat(prodPlugins)
+    let out = devPlugins;
+    if (process.env.NODE_ENV === 'production') out = out.concat(prodPlugins)
     return out;
   })(),
 };

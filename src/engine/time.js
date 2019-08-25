@@ -1,6 +1,6 @@
 import intervalSecond from './interval';
 
-let time = -255;
+let time = 0;
 const NOON = [
   154,
   218,

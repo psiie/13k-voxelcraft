@@ -41,7 +41,6 @@ function drawAllTextures() {
   }
 }
 
-
 function getBlock(x, y, z) {
   try{
     return window.game.map[x|0][y|0][z|0]
@@ -68,10 +67,19 @@ function isInsideCheck() {
   return isInside = false;
 }
 
+function calcArcFromLength(step, length) {
+  const half = length / 2;
+  const slide = step - half;
+  const inverse = half - Math.abs(slide);
+  const percent = inverse / half;
+  return percent;
+}
+
 module.exports = {
-  dlog,
+  dlog: /*@__PURE__*/ dlog, // pure b/c it can be pruned. is not pure though
   drawAllTextures,
   getBlock: /*@__PURE__*/ getBlock,
   setBlock,
   isInsideCheck: /*@__PURE__*/ isInsideCheck,
+  calcArcFromLength: /*@__PURE__*/ calcArcFromLength,
 };

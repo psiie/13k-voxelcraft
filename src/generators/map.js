@@ -1,7 +1,7 @@
 const { setBlock } = require('../utils');
 const mapDataType = require('./mapDataType');
 const Perlin = require("../vendor/perlin.skinny");
-const perlin = Perlin(13370);
+const perlin = Perlin(421);
 
 function growTree(map, x, y, z) {
   const height = (x * y % 6) + 6;
@@ -29,14 +29,14 @@ module.exports = () => {
     treeMap[x] = newArr();
     for (let z = 0; z < MAP_SIZE; z++) {
       // grass generation
-      let height = perlin(x / MAP_SCALE, z / MAP_SCALE);
+      let height = perlin(x / MAP_SCALE, z / MAP_SCALE, 0);
       height *= 10; // hill amplitude
       height += 32;
       height = Math.floor(height);
       heightMap[x][z] = height;
 
       // trees
-      let pTrees = perlin(x / 2, z / 2);
+      let pTrees = perlin(x / 2, z / 2, 0);
       pTrees *= 3;
       pTrees = Math.floor(pTrees);
       treeMap[x][z] = pTrees;

@@ -1,8 +1,6 @@
 import intervalSecond from './interval';
 const movement = require("../movement");
 const { render } = require("./render");
-const utils = require('../utils');
-let pid; // useful for pausing
 
 function drawTextureIcon(textureIndex, xStart, yStart) {
   const { pixels, texmap, width } = window.game;

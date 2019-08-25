@@ -1,3 +1,5 @@
+import compress from './utils/compress';
+import uncompress from './utils/uncompress';
 const movement = require("./movement");
 const generators = require('./generators');
 const engine = require('./engine');
@@ -49,4 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Game Bootstrap
   movement.init();
   engine.clock.init();
+
+  window.save = compress;
+  window.load = uncompress.main;
 });

@@ -1,9 +1,9 @@
 import time from './time';
 import intervalSecond from './interval';
-import { getBlock, isInsideCheck } from '../utils';
+import setPixelColor from './pixel';
+import { getBlock, calcArcFromLength } from '../utils';
 
-const RENDER_DISTANCE = 32,
-      CONTRAST = 255 * 192;
+const RENDER_DISTANCE = 32;
 let scanlinesEnabled = false,
     scanline = 0, // 0 or 1. determines startine line.
     waterAnimate = 0; // can simplify to bool to save space.
@@ -11,35 +11,6 @@ let scanlinesEnabled = false,
 intervalSecond(() => {
   waterAnimate = (waterAnimate + 1) % 3;
 })
-
-
-function calcArcFromLength(step, length) {
-  const half = length / 2;
-  const slide = step - half;
-  const inverse = half - Math.abs(slide);
-  const percent = inverse / half;
-  return percent;
-}
-
-function setPixelColor(x, y, brightness, col) {
-  const { pixels, width } = window.game;
-  const { color } = time;
-  const isInside = isInsideCheck();
-  const timeModifier = time.timeModifier();
-  const [ skyR, skyG, skyB ] = color();
-  let light = brightness * 255 / CONTRAST;
-  if (!isInside) light = light * (1 - timeModifier / 2);
-
-  let r = ((col >> 16) & 0xff) * light;
-  let g = ((col >> 8) & 0xff) * light;
-  let b = (col & 0xff) * light;
-
-  // Sky color 144 238 255
-  let pixelLocation = (x + y * width) * 4;
-  pixels.data[pixelLocation + 0] = r || skyR; //144
-  pixels.data[pixelLocation + 1] = g || skyG; //238
-  pixels.data[pixelLocation + 2] = b || skyB; //255
-}
 
 function render() {
   const { texmap, width, height, player, CONST, fps } = window.game;
@@ -50,7 +21,6 @@ function render() {
   const xCos = Math.cos(player.yaw);
   const xSin = Math.sin(player.yaw);
 
-  const worldzd = 1;
   const playerOffsetX = player.x - (player.x | 0);
   const playerOffsetY = player.y - (player.y | 0);
   const playerOffsetZ = player.z - (player.z | 0);
@@ -60,13 +30,13 @@ function render() {
   scanline = scanline ? 0 : 1; // fps saver
   for (let x = 0; x < width; x++) {
     // render distance
-    const arcX = /*@__PURE__*/ calcArcFromLength(x, width); // 0.0 - 1.0 float
+    const arcX = calcArcFromLength(x, width); // 0.0 - 1.0 float
     const biasedArcX = RENDER_DISTANCE * arcX;
     const worldxd = (x - width / 2) / height;
 
     for (let y = scanlinesEnabled ? (x % 2)+scanline : 0; y < height; y += scanlinesEnabled ? 2 : 1) {
       // render distance
-      const arcY = /*@__PURE__*/ calcArcFromLength(y, height); // 0.0 - 1.0 float
+      const arcY = calcArcFromLength(y, height); // 0.0 - 1.0 float
       const biasedArcY = RENDER_DISTANCE * arcY;
       const arcAvg = (biasedArcX + biasedArcY) / 2;
       let renderDistance = RENDER_DISTANCE + arcAvg;
@@ -76,9 +46,9 @@ function render() {
       /*    worldzd */
       /*    worldxd */
       const worldyd = (y - height / 2) / height;
-      const worldyd_ = worldzd * yCos + worldyd * ySin;
+      const worldyd_ = yCos + worldyd * ySin;
 
-      const rotxd = worldyd * yCos - worldzd * ySin;
+      const rotxd = worldyd * yCos - ySin;
       const rotyd = worldxd * xCos + worldyd_ * xSin;
       const rotzd = worldyd_ * xCos - worldxd * xSin;
 

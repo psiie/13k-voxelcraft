@@ -51,8 +51,8 @@ module.exports = {
 
       // check that next position is safe
       const nextPosition =  getBlock(x,player.y + player.velocity, z); // calculate head
-      if (nextPosition == 0) player.y += player.velocity;
-      else if (nextPosition == 9) player.y += player.velocity / 8;
+      if (nextPosition == 0) player.y += player.velocity; // air
+      else if (nextPosition == 9) player.y += player.velocity / 8; // water
       return;
     }
 

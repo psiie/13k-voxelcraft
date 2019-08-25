@@ -4,11 +4,11 @@
   "description": "",
   "main": "webpack.config.js",
   "devDependencies": {
-    "babel-preset-latest": "^6.24.1",
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
     "babel-minify-webpack-plugin": "^0.2.0",
     "babel-preset-es2015": "^6.24.1",
+    "babel-preset-latest": "^6.24.1",
     "cross-env": "^5.2.0",
     "css-loader": "^0.28.5",
     "html-webpack-plugin": "^2.30.1",
@@ -24,5 +24,8 @@
   },
   "keywords": [],
   "author": "Reno McKenzie",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "lz-string": "^1.4.4"
+  }
 }
