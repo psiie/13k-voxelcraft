@@ -49,6 +49,7 @@ function getBlock(x, y, z) {
 
 function setBlock(x, y, z, block, map, notBlock) {
   map = map || window.game.map;
+  if (x > 255 || y > 255 || z > 255) return;
   try {
     if (map[x][y][z] !== notBlock) map[x][y][z] = block;
   } catch(e) {} // eslint-disable-line no-empty

@@ -8,6 +8,30 @@ const LZString = require('../vendor/lz-string');
 58 max blocks atm. extentable to 62 without rework */
 const LOOKUP_TABLE = new Array(58).fill(1).map((_,i)=>String.fromCharCode(65+i));
 
+export const stringify = /*@__PURE__*/ map => {
+  return map.map(
+    x => x.map(
+      y => y.map(
+        z => LOOKUP_TABLE[z] || LOOKUP_TABLE[0]
+      ).join('')
+    ).join('')
+  ).join('');  
+};
+
+function mapArrToString() {
+  let final = '';
+  const orig = stringify(window.game._map);
+  const current = stringify(window.game.map);
+
+  for (let i=0; i<current.length; i++) {
+    const a = orig[i]
+    const b = current[i];
+    final += a === b ? '-' : b;
+  }
+
+  return final;
+}
+
 /* turns repeating chars in long string into number+char. Saves tons of space */
 function minifyRepeats(str) {
   let out = ''
@@ -30,32 +54,9 @@ function minifyRepeats(str) {
   return out;
 }
 
-function mapArrToString() {
-  const _stringify = /*@__PURE__*/ map => {
-    return map.map(
-      x => x.map(
-        y => y.map(
-          z => LOOKUP_TABLE[z] || LOOKUP_TABLE[0]
-        ).join('')
-      ).join('')
-    ).join('');  
-  };
-
-  const orig = _stringify(window.game._map);
-  const current = _stringify(window.game.map);
-  let final = '';
-
-  for (let i=0; i<current.length; i++) {
-    const a = orig[i]
-    const b = current[i];
-    final += a === b ? '-' : b;
-  }
-
-  return final;
-}
-
 function main() {
   const mapStr = /*@__PURE__*/ mapArrToString();
+  console.log('saving mapStr length', mapStr.length)
   const mapStrMinified = /*@__PURE__*/ minifyRepeats(mapStr);
   const compressed = LZString.compress(mapStrMinified);
   
