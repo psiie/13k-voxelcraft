@@ -1,10 +1,11 @@
-const { BLOCKS_MAP } = require('../constants');
+const { BLOCKS_MAP, CRAFTABLE_BLOCKS, UNCRAFTABLE_BLOCKS } = require('../constants');
 const HOTBAR_ICON_PADDING = 2;
 const hotbarWidth = (18 * 10);
 const hotbarHeight = 16;
 const hotbarX = () => (window.game.width - hotbarWidth) / 2
 const hotbarY = () => window.game.height - hotbarHeight - 8;
 
+// -------------------------------------------------------------------------- //
 
 function _drawTextureIcon(blockId, xStart, yStart) {
   const { pixels, texmap, width, hotbar } = window.game;
@@ -50,46 +51,101 @@ function _drawNumber(num, x, y) {
   ctx.fillText(safeNumber, x, y);
 }
 
-function drawIcons() {
+// -------------------------------------------------------------------------- //
+
+function drawIcons() { // pre draw
   const { hotbar } = window.game;
+
   BLOCKS_MAP[hotbar.side].forEach((id, idx) => {  // eslint-disable-line no-extra-semi
     const hotbarIconIdx = hotbarX() + (16 + HOTBAR_ICON_PADDING) * idx
     _drawTextureIcon(id, hotbarIconIdx, hotbarY());
   });
 }
 
-function drawHotbarBorder() {
+function drawHotbarBorder() { // post draw
   const { ctx, hotbar } = window.game;
 
-  // draw hotbar border
   const hotbarSelectedX = hotbarX() + (hotbar.selected * 18);
   ctx.lineWidth = 1;
   ctx.strokeStyle = `#fff`;
   ctx.strokeRect(hotbarSelectedX + 1, hotbarY() + 1, 14, hotbarHeight - 2);
   ctx.strokeStyle = `#000`;
   ctx.strokeRect(hotbarSelectedX, hotbarY(), 16, hotbarHeight);
-
-  // _drawNumber('000', 70, 225)
 }
 
-function drawIconNumers() {
+function drawIconNumers() { // post draw
   const { hotbar } = window.game;
-  const { item, side, selected } = hotbar;
+  const { side } = hotbar;
+
   for(let i=0;i<10;i++){
     const hotbarIconIdx = hotbarX() + (16 + HOTBAR_ICON_PADDING) * i;
     const blockId = BLOCKS_MAP[side][i]; // get block id from currently selected hotbar item
-    // const blockCount = hotbar.items[blockId];
     const count = hotbar.items[blockId];
     _drawNumber(count, hotbarIconIdx + 16, hotbarY() + 16)
   }
-  // BLOCKS_MAP[hotbar.side].forEach((i,idx)=>{  // eslint-disable-line no-extra-semi
-  // });
+}
+
+function inventoryAdd(blockId) {
+  const { hotbar } = window.game;
+  const { items } = hotbar;
+  
+  items[blockId]++;
+
+  // if crafted material picked up, add multiple mats
+  const craftableList = CRAFTABLE_BLOCKS[blockId];
+  if (craftableList !== undefined) {
+    Object.keys(CRAFTABLE_BLOCKS).forEach(blockId => {
+      const recipe = CRAFTABLE_BLOCKS[blockId];
+
+      recipe.forEach(([ makeBlockId, quantityRequired ]) => {
+        items[makeBlockId] = items[blockId] / quantityRequired | 0;
+      });
+    });
+  }
+  
+  // if raw material piced up, then add just one, but recalculate craftables
+  const uncraftableList = UNCRAFTABLE_BLOCKS[blockId];
+  if(uncraftableList !== undefined) {
+    Object.keys(UNCRAFTABLE_BLOCKS).forEach(blockId => {
+      const recipe = UNCRAFTABLE_BLOCKS[blockId];
+
+      recipe.forEach(([ rawMaterialBlockId, quantityAdded ]) => {
+        items[rawMaterialBlockId] += quantityAdded;
+      });
+    });
+  }
+}
+
+// todo: need to refactor inventoryRemove()
+function inventoryRemove(blockId) {
+  const { hotbar } = window.game;
+  const { items } = hotbar;
+
+  // must happen first for calculation below
+  items[blockId]--;
+  
+  // if raw material is removed, recalculate
+  const craftableList = CRAFTABLE_BLOCKS[blockId];
+  if (craftableList !== undefined) {
+    craftableList.forEach(([ materialBlockId, quantityRemoved ]) => {
+      items[materialBlockId] = items[blockId] / quantityRemoved | 0;
+    });
+  }
+
+  // if crafted matrial, remove mats by quanity multiplier
+  const uncraftableList = UNCRAFTABLE_BLOCKS[blockId];
+  if (uncraftableList !== undefined) {
+    uncraftableList.forEach(([ materialBlockId, quantityRemoved ]) => {
+      items[materialBlockId] = items[blockId] / quantityRemoved | 0;
+    });
+  }
 
 }
 
 module.exports = {
-  BLOCKS_MAP,
   drawIcons,
   drawHotbarBorder,
   drawIconNumers,
+  inventoryAdd,
+  inventoryRemove,
 };

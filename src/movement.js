@@ -1,4 +1,5 @@
 import { BLOCKS_MAP } from './constants';
+import { inventoryAdd, inventoryRemove } from './hotbar';
 const {  getBlock } = require('./utils');
 
 const keyState = {
@@ -171,9 +172,7 @@ module.exports = {
           
           if (/* left click */ e.button === 0) {
             map[rayX | 0][rayY | 0][rayZ | 0] = 0;
-            // add one block to the inventory
-            items[blockId]++; /* todo: refactor into a function that when called,
-            adds the new item and recalulates counts for crafted items */
+            inventoryAdd(blockId);
           } 
           
           else if (/* right click */ e.button === 2) {
@@ -181,9 +180,8 @@ module.exports = {
             const blockId = BLOCKS_MAP[hotbar.side][hotbar.selected];
             const count = items[blockId];
             if (!count) return;
-            map[pRayX | 0][pRayY | 0][pRayZ | 0] = blockId || 1;
-            items[blockId]--; // todo: see above;
-            // setBlock(rayX, rayY, rayZ, currBlock || 1, map);
+            map[pRayX | 0][pRayY | 0][pRayZ | 0] = blockId || 1; // setBlock(rayX, rayY, rayZ, currBlock || 1, map);
+            inventoryRemove(blockId);
           }
           return;
         }
