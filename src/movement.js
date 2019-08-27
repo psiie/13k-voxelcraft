@@ -1,4 +1,4 @@
-import { BLOCKS_MAP } from './hotbar';
+import { BLOCKS_MAP } from './constants';
 const {  getBlock } = require('./utils');
 
 const keyState = {
@@ -137,10 +137,10 @@ module.exports = {
       else if(k==83)keyState.backward=1;
       else if(k==32)keyState.jump=1;
 
-      else if(k==48) game.hotbarSelect = 9; // number select, 0
-      else if (k>=49 && k<=57) game.hotbarSelect = k - 49; // number select. 1-9
+      else if(k==48) game.hotbar.selected = 9; // number select, 0
+      else if (k>=49 && k<=57) game.hotbar.selected = k - 49; // number select. 1-9
       
-      else if(k==69) game.hotbarSide = game.hotbarSide ? 0 : 1; // e key. switch toolbar sides
+      else if(k==69) game.hotbar.side = game.hotbar.side ? 0 : 1; // e key. switch toolbar sides
     });
     
     eL("keyup", e => {
@@ -153,7 +153,8 @@ module.exports = {
     });
     
     eL("click", e => {
-      const { player, hotbarSelect, hotbarSide } = window.game;
+      const { player, hotbar } = window.game;
+      const { items, selected, side } = hotbar;
       let rayX = player.x,
           rayY = player.y,
           rayZ = player.z;
@@ -165,12 +166,23 @@ module.exports = {
         rayZ += Math.cos(player.yaw) * playerPitchCos / 1000;
 
         // ray found a block
-        if (getBlock(rayX, rayY, rayZ) > 0) {
-          if (/* left click */ e.button === 0) map[rayX | 0][rayY | 0][rayZ | 0] = 0;
+        const blockId = getBlock(rayX, rayY, rayZ);
+        if (blockId > 0) {
+          
+          if (/* left click */ e.button === 0) {
+            map[rayX | 0][rayY | 0][rayZ | 0] = 0;
+            // add one block to the inventory
+            items[blockId]++; /* todo: refactor into a function that when called,
+            adds the new item and recalulates counts for crafted items */
+          } 
+          
           else if (/* right click */ e.button === 2) {
             const [ pRayX, pRayY, pRayZ ] = previous;
-            const blockId = BLOCKS_MAP[hotbarSide][hotbarSelect];
+            const blockId = BLOCKS_MAP[hotbar.side][hotbar.selected];
+            const count = items[blockId];
+            if (!count) return;
             map[pRayX | 0][pRayY | 0][pRayZ | 0] = blockId || 1;
+            items[blockId]--; // todo: see above;
             // setBlock(rayX, rayY, rayZ, currBlock || 1, map);
           }
           return;

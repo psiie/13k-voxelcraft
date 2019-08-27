@@ -24,8 +24,11 @@ window.game = {
     pitch: -0.1, // Math.cos(4.6)
     yaw: 0,
   },
-  hotbarSelect: 0,
-  hotbarSide: 0,
+  hotbar: {
+    selected: 0,
+    side: 0,
+    items: Array(15).fill(0), // the indices coorelates to the block id. eg: 2 is dirt. the number in the array is the quanitity
+  },
   map: generators.map(),
   texmap: generators.textures(),
   ctx: document.getElementById("game").getContext("2d"),

@@ -25,7 +25,8 @@ function tick() {
   ctx.putImageData(pixels, 0, 0); // place buffer into canvas
   
   // --- postdraw --- ///
-  hotbar.drawNumbers(); // postdraw
+  hotbar.drawHotbarBorder(); // postdraw
+  hotbar.drawIconNumers();
 }
 
 /* on supported browsers, use requestAnimationFrame for optimizations */

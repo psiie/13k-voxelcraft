@@ -23,4 +23,9 @@ module.exports = {
     STR: 0.4,
     AMP: 0.0010
   },
+
+  BLOCKS_MAP: [ // which items to show on the hotbar. for both A and B sides (and maybe future C)
+    [2,3,4,5,6,7,10,11,12,13],
+    [13,12,11,10,7,6,5,4,3,2]
+  ],
 };
