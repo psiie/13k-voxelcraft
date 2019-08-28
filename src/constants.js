@@ -38,12 +38,48 @@ module.exports = {
     we can easily look this up on a block pickup.
   */
 
-  CRAFTABLE_BLOCKS: {
-    13: [[3, 4]], // 13 == sand
-  },
+  /* eslint-disable no-sparse-arrays */
+  CRAFTABLES: [
+    , // 0
+    , // 1
+    , // 2
+    , // 3
+    , // 4
+    , // 5
+    , // 6
+    , // 7
+    , // 8
+    , // 9
+    , // 10
+    , // 11
+    , // 12
+    3, // 13 - sand
+  ],
 
-  // used for when a crafted block is used. to remove the raw materials
-  UNCRAFTABLE_BLOCKS: {
-    3: [[13, 4]], // 3 == glass. 
-  }
+  // how many of the counterpart blocks are required to make one. Lookup by craftable id
+  CRAFTABLES_QUANTITY: [ 
+    , // 0
+    , // 1
+    , // 2
+    4, // 3
+    , // 4
+    , // 5
+    , // 6
+    , // 7
+    , // 8
+    , // 9
+    , // 10
+    , // 11
+    , // 12
+    , // 13
+  ],
+
+  // CRAFTABLE_BLOCKS: {
+  //   13: [[3, 4]], // 13 == sand
+  // },
+
+  // // used for when a crafted block is used. to remove the raw materials
+  // UNCRAFTABLE_BLOCKS: {
+  //   3: [[13, 4]], // 3 == glass. 
+  // }
 };
