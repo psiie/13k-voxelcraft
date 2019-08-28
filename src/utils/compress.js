@@ -55,6 +55,10 @@ function minifyRepeats(str) {
 }
 
 function main() {
+  const { localStorage, game } = window;
+  // save inventory. will probably move to a better file location
+  localStorage.setItem('_mci', JSON.stringify(game.hotbar.items));
+
   const mapStr = /*@__PURE__*/ mapArrToString();
   console.log('saving mapStr length', mapStr.length)
   const mapStrMinified = /*@__PURE__*/ minifyRepeats(mapStr);
@@ -63,7 +67,7 @@ function main() {
   console.log('minified', mapStrMinified.length, mapStrMinified);
   console.log('compressed', compressed.length, compressed);
 
-  window.localStorage.setItem('_mcm', compressed);
+  localStorage.setItem('_mcm', compressed);
 
   // verify save
   const uncompressed = LZString.decompress(compressed);

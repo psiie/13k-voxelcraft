@@ -1,3 +1,4 @@
+import { tryCatch } from './index';
 const LZString = require('../vendor/lz-string');
 
 /*  ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O",
@@ -43,8 +44,13 @@ function unMinify(str) {
 }
 
 function main() {
+  const { localStorage, game } = window;
+  // load items from save
+  const itemsFromSave = tryCatch(() => JSON.parse(localStorage.getItem('_mci')));
+  if (itemsFromSave) game.hotbar.items = itemsFromSave.map(item => item === null ? Infinity : item);
+
   // const seed = window.localStorage.get
-  const compressed = window.localStorage.getItem('_mcm');
+  const compressed = localStorage.getItem('_mcm');
 
   const uncompressed = LZString.decompress(compressed);
   const mapStr = unMinify(uncompressed);

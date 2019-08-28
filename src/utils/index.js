@@ -17,6 +17,18 @@ function dlog() {
   setTimeout(() => debounceLogging = false, 500);
 }
 
+function tryCatch(fn) {
+  let out = null;
+
+  try {
+    out = fn();
+  } catch(e) {
+    out = null;
+  }
+  
+  return out;
+}
+
 function drawAllTextures() {
   const { pixels, texmap, width } = window.game;
 
@@ -83,4 +95,5 @@ module.exports = {
   setBlock,
   isInsideCheck: /*@__PURE__*/ isInsideCheck,
   calcArcFromLength: /*@__PURE__*/ calcArcFromLength,
+  tryCatch: /*@__PURE__*/ tryCatch,
 };

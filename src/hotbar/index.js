@@ -1,14 +1,9 @@
-const { BLOCKS_MAP, CRAFTABLE_BLOCKS, UNCRAFTABLE_BLOCKS, CRAFTABLES, CRAFTABLES_QUANTITY } = require('../constants');
+const { BLOCKS_MAP, CRAFTABLES } = require('../constants');
 const HOTBAR_ICON_PADDING = 2;
 const hotbarWidth = (18 * 10);
 const hotbarHeight = 16;
 const hotbarX = () => (window.game.width - hotbarWidth) / 2
 const hotbarY = () => window.game.height - hotbarHeight - 8;
-
-const indexOf = /*@__PURE__*/ (arr, item) => {
-  const idx = arr.indexOf(item);
-  return idx === -1 ? null : idx;
-}
 
 // -------------------------------------------------------------------------- //
 
@@ -56,6 +51,20 @@ function _drawNumber(num, x, y) {
   ctx.fillText(safeNumber, x, y);
 }
 
+
+const _findMatIdByCraftableId = /*@__PURE__*/ (id) => {
+  let found = 0;
+  Object.entries(CRAFTABLES).some(([ rawMatId, craftableArr ]) => {
+    const [ craftableId ] = craftableArr || [];
+    
+    if (craftableId !== id) return false;
+    found = rawMatId;
+    return true;
+  });
+
+  return found;
+}
+
 // -------------------------------------------------------------------------- //
 
 function drawIcons() { // pre draw
@@ -90,37 +99,24 @@ function drawIconNumers() { // post draw
   }
 }
 
-const findMatIdByCraftableId = /*@__PURE__*/ (id) => {
-  let found = 0;
-  Object.entries(CRAFTABLES).some(([ rawMatId, craftableArr ]) => {
-    const [ craftableId ] = craftableArr || [];
-    
-    if (craftableId !== id) return false;
-    found = rawMatId;
-    return true;
-  });
-
-  return found;
-}
-
 function inventoryAdd(blockId) {
   const { hotbar } = window.game;
   const { items } = hotbar;
+
+  items[blockId]++;
 
   // -- RAW material pickup -- //
   const craftedBlockCounterpart = CRAFTABLES[blockId];
   if (craftedBlockCounterpart) {
     const [ craftableBlock, quantity ] = craftedBlockCounterpart;
-    items[blockId]++;
     items[craftableBlock] = items[blockId] / quantity | 0;
     return;
   }
 
   // -- CRAFTED block pickup -- //
-  const rawBlockCounterpart = findMatIdByCraftableId(blockId);
+  const rawBlockCounterpart = _findMatIdByCraftableId(blockId);
   if (rawBlockCounterpart) {
     const [ , quantity ] = CRAFTABLES[rawBlockCounterpart];
-    items[blockId]++; // just to keep in sync
     items[rawBlockCounterpart]+=quantity;
   }
 }
@@ -129,19 +125,20 @@ function inventoryRemove(blockId) {
   const { hotbar } = window.game;
   const { items } = hotbar;
 
+  items[blockId]--;
+
   // -- RAW material placed -- //
   const craftedBlockCounterpart = CRAFTABLES[blockId];
   if (craftedBlockCounterpart) {
     const [ craftableBlock, quantity ] = craftedBlockCounterpart;
-    items[blockId]--;
     items[craftableBlock] = items[blockId] / quantity | 0;
+    return;
   }
 
   // -- CRAFTED block placed -- //
-  const rawBlockCounterpart = findMatIdByCraftableId(blockId);
+  const rawBlockCounterpart = _findMatIdByCraftableId(blockId);
   if (rawBlockCounterpart) {
     const [ , quantity ] = CRAFTABLES[rawBlockCounterpart];
-    items[blockId]--; // just to keep in sync
     items[rawBlockCounterpart]-=quantity;
   }
 }
@@ -153,49 +150,3 @@ module.exports = {
   inventoryAdd,
   inventoryRemove,
 };
-
-
-  // if crafted material picked up, add multiple mats
-  // const craftableList = CRAFTABLE_BLOCKS[blockId];
-  // if (craftableList !== undefined) {
-  //   Object.keys(CRAFTABLE_BLOCKS).forEach(blockId => {
-  //     const recipe = CRAFTABLE_BLOCKS[blockId];
-
-  //     recipe.forEach(([ makeBlockId, quantityRequired ]) => {
-  //       items[makeBlockId] = items[blockId] / quantityRequired | 0;
-  //     });
-  //   });
-  // }
-  
-  // if raw material piced up, then add just one, but recalculate craftables
-  // const uncraftableList = UNCRAFTABLE_BLOCKS[blockId];
-  // if(uncraftableList !== undefined) {
-  //   Object.keys(UNCRAFTABLE_BLOCKS).forEach(blockId => {
-  //     const recipe = UNCRAFTABLE_BLOCKS[blockId];
-
-  //     recipe.forEach(([ rawMaterialBlockId, quantityAdded ]) => {
-  //       items[rawMaterialBlockId] += quantityAdded;
-  //     });
-  //   });
-  // }
-
-
-
-
-
-  // if raw material is removed, recalculate
-  // const craftableList = CRAFTABLE_BLOCKS[blockId];
-  // if (craftableList !== undefined) {
-  //   craftableList.forEach(([ materialBlockId, quantityRemoved ]) => {
-  //     items[materialBlockId] = items[blockId] / quantityRemoved | 0;
-  //   });
-  // }
-
-  // // if crafted matrial, remove mats by quanity multiplier
-  // const uncraftableList = UNCRAFTABLE_BLOCKS[blockId];
-  // if (uncraftableList !== undefined) {
-  //   uncraftableList.forEach(([ materialBlockId, quantityRemoved ]) => {
-  //     items[materialBlockId] = items[blockId] / quantityRemoved | 0;
-  //   });
-  // }
-
