@@ -90,30 +90,41 @@ function drawIconNumers() { // post draw
   }
 }
 
+const findMatIdByCraftableId = /*@__PURE__*/ (id) => {
+  let found = 0;
+  Object.entries(CRAFTABLES).some(([ rawMatId, craftableArr ]) => {
+    const [ craftableId ] = craftableArr || [];
+    
+    if (craftableId !== id) return false;
+    found = rawMatId;
+    return true;
+  });
+
+  return found;
+}
+
 function inventoryAdd(blockId) {
   const { hotbar } = window.game;
   const { items } = hotbar;
 
-  
   // -- RAW material pickup -- //
   const craftedBlockCounterpart = CRAFTABLES[blockId];
   if (craftedBlockCounterpart) {
-    const quantity = CRAFTABLES_QUANTITY[craftedBlockCounterpart] || 1; // guard
+    const [ craftableBlock, quantity ] = craftedBlockCounterpart;
     items[blockId]++;
-    items[craftedBlockCounterpart] = items[blockId] / quantity | 0;
+    items[craftableBlock] = items[blockId] / quantity | 0;
     return;
   }
 
   // -- CRAFTED block pickup -- //
-  const rawBlockCounterpart = indexOf(CRAFTABLES, blockId);
-  const quantity = CRAFTABLES_QUANTITY[blockId] || 1; // guard
+  const rawBlockCounterpart = findMatIdByCraftableId(blockId);
   if (rawBlockCounterpart) {
+    const [ , quantity ] = CRAFTABLES[rawBlockCounterpart];
     items[blockId]++; // just to keep in sync
     items[rawBlockCounterpart]+=quantity;
   }
 }
 
-// todo: need to refactor inventoryRemove()
 function inventoryRemove(blockId) {
   const { hotbar } = window.game;
   const { items } = hotbar;
@@ -121,15 +132,15 @@ function inventoryRemove(blockId) {
   // -- RAW material placed -- //
   const craftedBlockCounterpart = CRAFTABLES[blockId];
   if (craftedBlockCounterpart) {
-    const quantity = CRAFTABLES_QUANTITY[craftedBlockCounterpart] || 1; // guard
+    const [ craftableBlock, quantity ] = craftedBlockCounterpart;
     items[blockId]--;
-    items[craftedBlockCounterpart] = items[blockId] / quantity | 0;
+    items[craftableBlock] = items[blockId] / quantity | 0;
   }
 
   // -- CRAFTED block placed -- //
-  const rawBlockCounterpart = indexOf(CRAFTABLES, blockId);
-  const quantity = CRAFTABLES_QUANTITY[blockId] || 1; // guard
+  const rawBlockCounterpart = findMatIdByCraftableId(blockId);
   if (rawBlockCounterpart) {
+    const [ , quantity ] = CRAFTABLES[rawBlockCounterpart];
     items[blockId]--; // just to keep in sync
     items[rawBlockCounterpart]-=quantity;
   }

@@ -29,57 +29,8 @@ module.exports = {
     [13,12,11,10,7,6,5,4,3,2]
   ],
 
-  /* format: `blockId: [required block, required block count]`.
-  Item is a array of arrays. This is so that one block pickup can make multiple blocks
-  example:
-      10: [3, 4]
-    sand: [glass, 4x sand]
-    eg: you need 4 sand to make 1 glass. You may notice this seems backwards, but it is so
-    we can easily look this up on a block pickup.
-  */
+  CRAFTABLES: {
+    13: [3, 4], // 13 (sand) makes 3 (glass) every 4x 13 (sand)
+  },
 
-  /* eslint-disable no-sparse-arrays */
-  CRAFTABLES: [
-    , // 0
-    , // 1
-    , // 2
-    , // 3
-    , // 4
-    , // 5
-    , // 6
-    , // 7
-    , // 8
-    , // 9
-    , // 10
-    , // 11
-    , // 12
-    3, // 13 - sand
-  ],
-
-  // how many of the counterpart blocks are required to make one. Lookup by craftable id
-  CRAFTABLES_QUANTITY: [ 
-    , // 0
-    , // 1
-    , // 2
-    4, // 3
-    , // 4
-    , // 5
-    , // 6
-    , // 7
-    , // 8
-    , // 9
-    , // 10
-    , // 11
-    , // 12
-    , // 13
-  ],
-
-  // CRAFTABLE_BLOCKS: {
-  //   13: [[3, 4]], // 13 == sand
-  // },
-
-  // // used for when a crafted block is used. to remove the raw materials
-  // UNCRAFTABLE_BLOCKS: {
-  //   3: [[13, 4]], // 3 == glass. 
-  // }
 };
