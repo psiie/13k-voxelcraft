@@ -11,14 +11,19 @@ module.exports = /*@__PURE__*/ () => {
   // 7 = log
   // 8 = leaves
   // 9 = water
-  // 10 = sponge – yellow replacement // todo: eliminate
-  // 11 = red cloth // todo: eliminate
-  // 12 = green block // todo: eliminate
-  // 13 = sand
-  // 14 = gold ore
-  // 15 = diamond ore
+  // 10 = lava
+  // 11 = obsidian
+  // 12 = sand
+  // 13 = clay
+  // 14 = ruby ore
+  // 15 = gold ore
+  // 16 = diamond ore
+  // 17 = ruby block
+  // 18 = gold block
+  // 19 = diamond block
+  // 20 = moss stone
 
-  for (let textureIndex = 1; textureIndex < 19; textureIndex++) {
+  for (let textureIndex = 1; textureIndex < 21; textureIndex++) {
     /* VarientA and VarientB are really just transparency values. But are great
     for setting variations of colors. */
     let varientA = 255 - ((Math.random() * 96) | 0);
@@ -103,17 +108,18 @@ module.exports = /*@__PURE__*/ () => {
         }
 
         // 9 = water
-        // todo: animate water
         if (textureIndex == 9) {
           color = 0x4060ff; // #4060ff #4040ff
           varientB = ((Math.random() * 32) | 0) + 192
         }
 
-        // 10 = sponge – yellow replacement // todo: will be lava
+        // 10 = lava
         if (textureIndex == 10) {
-          // color = 0xd9d85e; // #d9d85e
-          varientB = 0;
-          // if (Math.random() * 16 < 1) varientB = 92 - (x * 4);
+          color = 0xf13e42; // #d11e22
+          varientB = ((Math.random() * 32) | 0) + 192
+          if (((Math.random() * 2) | 0) === 0) {
+            color = 0xf19e42; // #f19e42
+          }
         }
 
         // 11 = obsidian
@@ -132,31 +138,40 @@ module.exports = /*@__PURE__*/ () => {
           }
         }
 
+        // 13 = clay
+        if (textureIndex == 13) {
+          color = 0xe7efe0; // #e7efe0
+          if (Math.random() * 16 < 1) {
+            color = 0xf7af9a; // #f7af9a
+          }
+        }
+
         const oreLogic = oreColor => {
           if ((x > 2 && x < 13) && ((y > 2 && y < 13) || y > 18 && y < 29)) {
             if (Math.random() * 4 < 1) color = oreColor;
           }
         }
 
-        // // 14 = gold ore
-        if (textureIndex == 13) {
+        // 14 = ruby ore
+        if (textureIndex == 14) {
           color = 0x7f7f7f; // #7f7f7f
           oreLogic(0xf13e42); // #f13e42
         }
 
-        // // 14 = gold ore
-        if (textureIndex == 14) {
+        // 15 = gold ore
+        if (textureIndex == 15) {
           color = 0x7f7f7f; // #7f7f7f
           oreLogic(0xf0c328); // #F0C328
         }
 
-        // 15 = diamond ore
-        if (textureIndex == 15) {
+        // 16 = diamond ore
+        if (textureIndex == 16) {
           color = 0x7f7f7f; // #7f7f7f
           oreLogic(0x44eded); // #44eded
         }
 
-        if (textureIndex == 16) {
+        // 17 = ruby block
+        if (textureIndex == 17) {
           color = 0xd11e22; // #d11e22
           if (Math.random() * 16 < 1) varientB = 164 + (x * 4);
 
@@ -169,7 +184,8 @@ module.exports = /*@__PURE__*/ () => {
           } 
         }
 
-        if (textureIndex == 17) {
+        // 18 = gold block
+        if (textureIndex == 18) {
           color = 0xd0a308; // #d0a308
           if (Math.random() * 16 < 1) varientB = 164 + (x * 4);
 
@@ -182,7 +198,8 @@ module.exports = /*@__PURE__*/ () => {
           } 
         }
 
-        if (textureIndex == 18) {
+        // 19 = diamond block
+        if (textureIndex == 19) {
           color = 0x33abab; // #33abab
           if (Math.random() * 16 < 1) varientB = 164 + (x * 4);
 
@@ -195,25 +212,15 @@ module.exports = /*@__PURE__*/ () => {
           } 
         }
 
-        // todo: lava, clay
+        // 20 = moss stone
+        if (textureIndex == 20) {
+          color = 0x7f7f7f; // #7f7f7f
 
-
-        // color = 0xd11e22; // #d11e22
-        // if (y < 32) color = 0xf13e42; // #f13e42
-        // color = 0xf0c328; // #d0a308
-        // if (y < 32) color = 0xf0c328; // #f0c328
-
-        // // 10 = sponge – yellow replacement
-        // if (textureIndex == 10) {
-        //   color = 0xd9d85e; // #d9d85e
-        //   if (Math.random() * 16 < 1) varientB = 92 - (x * 4);
-        // }
-
-        // ruby solid block
-        // if (textureIndex == 11) color = 0xf13e42; // #f13e42
-
-        // 12 = green block
-        // if (textureIndex == 13) color = 0x31df31; // #31df31
+          if (((Math.random() * 4) | 0) >= 1) {
+            if (((Math.random() * 2) | 0) === 0) color = 0x508917; // #508917
+            else color = 0x508917; // #707927
+          }
+        }
 
         // Calculate pixel's binary data (rgb as one integer)
         const rgbPixel = ((((color >> 16) & 0xff) * varientB / 255) << 16) | // R

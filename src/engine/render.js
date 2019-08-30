@@ -112,11 +112,15 @@ function render() {
               col = cc;
 
               // if water block, animate
-              if (texture === 9 && dimension == 1) {
+              if (
+                dimension == 1
+                && (texture === 9 || texture === 10)
+              ) {
+                /* only animate topside. prevents texture sliding into next texture.
+                the ternary is to save space. Basically lava, being the next texture, needs a diff cutoff point. */
                 const texId = u + v * (waterAnimate+1)*16 + texture * 256 * 3;
-                if (texId < 7680) col = texmap[texId]; // only animate topside. prevents texture sliding into next texture
+                if (texId < texture == 9 ? 7680 : 8680) col = texmap[texId];
               }
-
               const timeModifier = time.timeModifier();
               const distancePercent = 1 - (distance / RENDER_DISTANCE * timeModifier);
               brightness = (255 - (dimension + 2) % 3 * 50) * (distancePercent);

@@ -32,7 +32,7 @@ function tryCatch(fn) {
 function drawAllTextures() {
   const { pixels, texmap, width } = window.game;
 
-  for (let i=0; i<19; i++) {
+  for (let i=0; i<21; i++) {
     for (let y = 0; y < 16 * 3; y++) {
       for (let x = 0; x < 16; x++) {
         const texturePixel = texmap[x + y * 16 + i * 256 * 3];
