@@ -1,5 +1,6 @@
 import compress from './utils/compress';
 import uncompress from './utils/uncompress';
+import { getTime, setTime } from './engine/time';
 const movement = require("./movement");
 const generators = require('./generators');
 const engine = require('./engine');
@@ -16,6 +17,8 @@ window.game = {
   CONST: CONST,
   width: WIDTH,
   height: HEIGHT,
+  getTime,
+  setTime,
   player: {
     x: start,
     y: 0,
@@ -27,7 +30,7 @@ window.game = {
   hotbar: {
     selected: 0,
     side: 0,
-    items: Array(15).fill(0), // the indices coorelates to the block id. eg: 2 is dirt. the number in the array is the quanitity
+    items: Array(20).fill(0), // the indices coorelates to the block id. eg: 2 is dirt. the number in the array is the quanitity
   },
   map: generators.map(),
   texmap: generators.textures(),

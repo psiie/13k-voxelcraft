@@ -10,15 +10,15 @@ module.exports = /*@__PURE__*/ () => {
   // 6 = wood planks
   // 7 = log
   // 8 = leaves
-  // 9 = blue cloth
-  // 10 = sponge – yellow replacement
-  // 11 = red cloth
-  // 12 = green block
+  // 9 = water
+  // 10 = sponge – yellow replacement // todo: eliminate
+  // 11 = red cloth // todo: eliminate
+  // 12 = green block // todo: eliminate
   // 13 = sand
   // 14 = gold ore
   // 15 = diamond ore
 
-  for (let textureIndex = 1; textureIndex < 16; textureIndex++) {
+  for (let textureIndex = 1; textureIndex < 19; textureIndex++) {
     /* VarientA and VarientB are really just transparency values. But are great
     for setting variations of colors. */
     let varientA = 255 - ((Math.random() * 96) | 0);
@@ -46,7 +46,12 @@ module.exports = /*@__PURE__*/ () => {
         // 3 - glass
         if (textureIndex == 3) {
           color = 0xdedede; // #ddd
-          if ((x > 0 && x < 15) && ((y > 0 && y < 15) || (y > 16 && y < 31))) varientB = 0;
+          if ( // vert lines
+            (x > 0 && x < 15)
+            && ( // horiz lines
+              (y > 0 && y < 15) || (y > 16 && y < 31) || (y > 32 && y < 47)
+            )
+          ) varientB = 0;
         }
 
         // 4 = stone
@@ -104,20 +109,23 @@ module.exports = /*@__PURE__*/ () => {
           varientB = ((Math.random() * 32) | 0) + 192
         }
 
-        // 10 = sponge – yellow replacement
+        // 10 = sponge – yellow replacement // todo: will be lava
         if (textureIndex == 10) {
-          color = 0xd9d85e; // #d9d85e
-          if (Math.random() * 16 < 1) varientB = 92 - (x * 4);
+          // color = 0xd9d85e; // #d9d85e
+          varientB = 0;
+          // if (Math.random() * 16 < 1) varientB = 92 - (x * 4);
         }
-        
-        // 11 = red cloth
-        if (textureIndex == 11) color = 0xf13e42; // #f13e42
 
-        // 12 = green block
-        if (textureIndex == 12) color = 0x31df31; // #31df31
+        // 11 = obsidian
+        if (textureIndex == 11) {
+          color = 0x430463; // #430463
+          if (((Math.random() * 2) | 0) === 0) {
+            color = 0x230443; // #230443
+          }
+        }
 
-        // 13 = sand
-        if (textureIndex == 13) {
+        // 12 = sand
+        if (textureIndex == 12) {
           color = 0xe7dfb0; // #e7dfb0
           if (Math.random() * 16 < 1) {
             varientB = 164 + (x * 4);
@@ -129,10 +137,17 @@ module.exports = /*@__PURE__*/ () => {
             if (Math.random() * 4 < 1) color = oreColor;
           }
         }
+
+        // // 14 = gold ore
+        if (textureIndex == 13) {
+          color = 0x7f7f7f; // #7f7f7f
+          oreLogic(0xf13e42); // #f13e42
+        }
+
         // // 14 = gold ore
         if (textureIndex == 14) {
           color = 0x7f7f7f; // #7f7f7f
-          oreLogic(0xf0e4a1); // #f0e4a1
+          oreLogic(0xf0c328); // #F0C328
         }
 
         // 15 = diamond ore
@@ -140,6 +155,65 @@ module.exports = /*@__PURE__*/ () => {
           color = 0x7f7f7f; // #7f7f7f
           oreLogic(0x44eded); // #44eded
         }
+
+        if (textureIndex == 16) {
+          color = 0xd11e22; // #d11e22
+          if (Math.random() * 16 < 1) varientB = 164 + (x * 4);
+
+          if (
+            (x >= 0 && x < 14) // vert lines
+            && ((y > 0 && y < 15) || (y > 16 && y < 31) || (y > 32 && y < 47))  // horiz lines
+          ) {
+            if (y < 32) color = 0xf13e42; // #f13e42
+            varientA = 255
+          } 
+        }
+
+        if (textureIndex == 17) {
+          color = 0xd0a308; // #d0a308
+          if (Math.random() * 16 < 1) varientB = 164 + (x * 4);
+
+          if (
+            (x >= 0 && x < 14) // vert lines
+            && ((y > 0 && y < 15) || (y > 16 && y < 31) || (y > 32 && y < 47))  // horiz lines
+          ) {
+            if (y < 32) color = 0xf0c328; // #f0c328
+            varientA = 255
+          } 
+        }
+
+        if (textureIndex == 18) {
+          color = 0x33abab; // #33abab
+          if (Math.random() * 16 < 1) varientB = 164 + (x * 4);
+
+          if (
+            (x >= 0 && x < 14) // vert lines
+            && ((y > 0 && y < 15) || (y > 16 && y < 31) || (y > 32 && y < 47))  // horiz lines
+          ) {
+            if (y < 32) color = 0x44eded; // #44eded
+            varientA = 255
+          } 
+        }
+
+        // todo: lava, clay
+
+
+        // color = 0xd11e22; // #d11e22
+        // if (y < 32) color = 0xf13e42; // #f13e42
+        // color = 0xf0c328; // #d0a308
+        // if (y < 32) color = 0xf0c328; // #f0c328
+
+        // // 10 = sponge – yellow replacement
+        // if (textureIndex == 10) {
+        //   color = 0xd9d85e; // #d9d85e
+        //   if (Math.random() * 16 < 1) varientB = 92 - (x * 4);
+        // }
+
+        // ruby solid block
+        // if (textureIndex == 11) color = 0xf13e42; // #f13e42
+
+        // 12 = green block
+        // if (textureIndex == 13) color = 0x31df31; // #31df31
 
         // Calculate pixel's binary data (rgb as one integer)
         const rgbPixel = ((((color >> 16) & 0xff) * varientB / 255) << 16) | // R

@@ -1,4 +1,5 @@
 import { unMinify } from './uncompress';
+import { getTime } from '../engine/time';
 const LZString = require('../vendor/lz-string');
 
 /*  ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O",
@@ -56,6 +57,7 @@ function minifyRepeats(str) {
 
 function main() {
   const { localStorage, game } = window;
+  localStorage.setItem('_mct', getTime());
   // save inventory. will probably move to a better file location
   localStorage.setItem('_mci', JSON.stringify(game.hotbar.items));
 

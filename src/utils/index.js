@@ -32,7 +32,7 @@ function tryCatch(fn) {
 function drawAllTextures() {
   const { pixels, texmap, width } = window.game;
 
-  for (let i=0; i<16; i++) {
+  for (let i=0; i<19; i++) {
     for (let y = 0; y < 16 * 3; y++) {
       for (let x = 0; x < 16; x++) {
         const texturePixel = texmap[x + y * 16 + i * 256 * 3];
@@ -43,8 +43,18 @@ function drawAllTextures() {
         let r = ((texturePixel >> 16) & 0xff) * light;
         let g = ((texturePixel >> 8) & 0xff) * light;
         let b = (texturePixel & 0xff) * light;
-  
-        const pixelLocation = ((i * 16) + x + y * width) * 4;
+        
+
+        const blockSelect = i * 16;
+        let xLocation = blockSelect + x;
+        let yLocation = width * y;
+
+        if (i > 16) {
+          xLocation -= 272;
+          yLocation = width * (y + 48);
+        }
+
+        const pixelLocation = (xLocation + yLocation) * 4;
         pixels.data[pixelLocation + 0] = r;
         pixels.data[pixelLocation + 1] = g;
         pixels.data[pixelLocation + 2] = b;

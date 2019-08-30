@@ -25,12 +25,18 @@ module.exports = {
   },
 
   BLOCKS_MAP: [ // which items to show on the hotbar. for both A and B sides (and maybe future C)
-    [2,3,4,5,6,7,10,11,12,13],
-    [13,12,11,10,7,6,5,4,3,2]
+    // [2,3,4,5,6,7,10,11,12,12],
+    [2,4,12,7,9 ,11,0,13,14,15],
+    [1,0, 3,6,10, 0,5,16,17,18],
   ],
 
   CRAFTABLES: {
-    13: [3, 4], // 13 (sand) makes 3 (glass) every 4x 13 (sand)
+    2: [1, 1],
+    7: [6, 0.25],
+    12: [3, 4], // 12 (sand) makes 3 (glass) every 4x 12 (sand)
+    13: [16, 9],
+    14: [17, 9],
+    15: [18, 9],
   },
 
 };

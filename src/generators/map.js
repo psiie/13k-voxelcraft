@@ -48,7 +48,7 @@ module.exports = () => {
   for (let x = 0; x < MAP_SIZE; x++) {
     for (let z = 0; z < MAP_SIZE; z++) {
       const mHeight = heightMap[x][z];
-      map[x][mHeight][z] = mHeight <= SEA_LEVEL ? 1 : 13; // fill heightmap with grass
+      map[x][mHeight][z] = mHeight <= SEA_LEVEL ? 1 : 12; // fill heightmap with grass (or sand at sea level)
       for (let y = mHeight - 1; y > SEA_LEVEL; y--) map[x][y][z] = 9; // water fill 9
       for (let y = mHeight + 1; y < 64; y++) map[x][y][z] = 4; // underground fill
       if (treeMap[x][z] <= -2 && mHeight < SEA_LEVEL) growTree(map, x, mHeight - 1, z);

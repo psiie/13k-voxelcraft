@@ -1,6 +1,6 @@
 import intervalSecond from './interval';
 
-let time = 0;
+export let time = 0;
 const NOON = [
   154,
   218,
@@ -11,6 +11,14 @@ const DUSK = [
   25,
   75,
 ];
+
+function getTime() {
+  return time;
+}
+
+function setTime(t) {
+  time = parseFloat(t);
+}
 
 // todo: there is a problem with exact midnight. red turns to blue.
 intervalSecond(() => {
@@ -60,4 +68,6 @@ function color() {
 module.exports = {
   color: /*@__PURE__*/ color,
   timeModifier: /*@__PURE__*/ timeModifier,
+  setTime,
+  getTime: /*@__PURE__*/ getTime,
 }

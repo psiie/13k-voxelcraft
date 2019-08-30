@@ -39,6 +39,7 @@ function _drawTextureIcon(blockId, xStart, yStart) {
 
 function _drawNumber(num, x, y) {
   const { ctx } = window.game;
+  if (num == void 0) return;
 
   if (num === Infinity) return;
   let safeNumber = num > 999 ? (num/1000|0)+'k' : num;
