@@ -30,7 +30,7 @@ window.game = {
   hotbar: {
     selected: 0,
     side: 0,
-    items: Array(20).fill(0), // the indices coorelates to the block id. eg: 2 is dirt. the number in the array is the quanitity
+    items: Array(21).fill(0), // the indices coorelates to the block id. eg: 2 is dirt. the number in the array is the quanitity
   },
   map: generators.map(),
   texmap: generators.textures(),
