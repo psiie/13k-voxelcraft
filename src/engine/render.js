@@ -3,7 +3,7 @@ import intervalSecond from './interval';
 import setPixelColor from './pixel';
 import { getBlock, calcArcFromLength } from '../utils';
 
-const RENDER_DISTANCE = 32;
+const RENDER_DISTANCE = 64; //todo:
 let scanlinesEnabled = false,
     scanline = 0, // 0 or 1. determines startine line.
     waterAnimate = 0; // can simplify to bool to save space.
@@ -40,7 +40,7 @@ function render() {
       const biasedArcY = RENDER_DISTANCE * arcY;
       const arcAvg = (biasedArcX + biasedArcY) / 2;
       let renderDistance = RENDER_DISTANCE + arcAvg;
-      if (fps < 30) renderDistance = renderDistance * (fps/30); // fps saver
+      // if (fps < 30) renderDistance = renderDistance * (fps/30); // fps saver //todo:
 
       // pixel maths
       /*    worldzd */
@@ -97,6 +97,8 @@ function render() {
 
           // if not an air block
           if (texture > 0) {
+          // if (texture == 20 || texture == 17 || texture == 18 || texture == 19) {
+          // if (texture == 20 || texture == 10) {
             let u = ((xp + zp) * 16) & 15;
             let v = ((yp * 16) & 15) + 16;
 
