@@ -3,7 +3,7 @@ import intervalSecond from './interval';
 import setPixelColor from './pixel';
 import { getBlock, calcArcFromLength } from '../utils';
 
-const RENDER_DISTANCE = 64; //todo:
+const RENDER_DISTANCE = 64;
 let scanlinesEnabled = false,
     scanline = 0, // 0 or 1. determines startine line.
     waterAnimate = 0; // can simplify to bool to save space.
@@ -25,7 +25,6 @@ function render() {
   const playerOffsetY = player.y - (player.y | 0);
   const playerOffsetZ = player.z - (player.z | 0);
 
-  // scanlinesEnabled = fps < 20; // todo: enable
   scanlinesEnabled = true;
   scanline = scanline ? 0 : 1; // fps saver
   for (let x = 0; x < width; x++) {
@@ -40,7 +39,7 @@ function render() {
       const biasedArcY = RENDER_DISTANCE * arcY;
       const arcAvg = (biasedArcX + biasedArcY) / 2;
       let renderDistance = RENDER_DISTANCE + arcAvg;
-      // if (fps < 30) renderDistance = renderDistance * (fps/30); // fps saver //todo:
+      if (fps < 30) renderDistance = renderDistance * (fps/30);
 
       // pixel maths
       /*    worldzd */

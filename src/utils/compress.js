@@ -1,5 +1,6 @@
 import { unMinify } from './uncompress';
 import { getTime } from '../engine/time';
+import generators from '../generators';
 const LZString = require('../vendor/lz-string');
 
 /*  ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O",
@@ -19,9 +20,13 @@ export const stringify = /*@__PURE__*/ map => {
   ).join('');  
 };
 
+const getOriginalMap = /*@__PURE__*/() => {
+  return window.game._map = window.game._map || generators.map(); // original map. used for making a diff
+}
+
 function mapArrToString() {
   let final = '';
-  const orig = stringify(window.game._map);
+  const orig = stringify(getOriginalMap());
   const current = stringify(window.game.map);
 
   for (let i=0; i<current.length; i++) {

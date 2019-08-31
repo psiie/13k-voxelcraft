@@ -27,6 +27,7 @@ module.exports = () => {
   const map = mapDataType();
 
   const newArr = () => new Array(MAP_SIZE);
+  const $loading = document.getElementById('loading');
   
   // generate height-map
   const heightMap = newArr();
@@ -50,6 +51,8 @@ module.exports = () => {
       window.treeMap = treeMap;
     }
   }
+
+  console.log('ran')
 
   // map height to map
   for (let x = 0; x < MAP_SIZE; x++) {
@@ -114,5 +117,6 @@ module.exports = () => {
     }
   }
 
+  $loading.hidden = true;
   return map;
 }

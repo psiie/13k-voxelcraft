@@ -37,7 +37,6 @@ window.game = {
   ctx: document.getElementById("game").getContext("2d"),
   fps: 0, 
 };
-window.game._map = generators.map(); // original map. used for making a diff
 
 document.addEventListener('DOMContentLoaded', () => {
   const { game } = window;

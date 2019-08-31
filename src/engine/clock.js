@@ -20,7 +20,7 @@ function tick() {
 
   // --- predraw --- ///
   hotbar.drawIcons(); // predraw
-  utils.drawAllTextures(); // debug - display all blocks on screen
+  // utils.drawAllTextures(); // debug - display all blocks on screen
   
   // --- draw --- ///
   ctx.putImageData(pixels, 0, 0); // place buffer into canvas
