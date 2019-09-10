@@ -20,12 +20,6 @@ function setTime(t) {
   time = parseFloat(t);
 }
 
-// todo: there is a problem with exact midnight. red turns to blue.
-intervalSecond(() => {
-  time+=0.5;
-  if (time >255) time = -255;
-})
-
 function timeModifier() {
   const uTime = Math.abs(time);
   return uTime/255;
@@ -64,6 +58,11 @@ function color() {
     b * modifier,
   ];
 }
+
+intervalSecond(() => {
+  time+=0.5;
+  if (time >255) time = -255;
+});
 
 module.exports = {
   color: /*@__PURE__*/ color,

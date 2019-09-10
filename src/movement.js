@@ -133,11 +133,13 @@ module.exports = {
       console.log('e', e.keyCode)
       const { game } = window;
       const k=e.keyCode;
-      if(k==65)keyState.strafeLeft=1;
+      if(k==16)keyState.shift=1;
+      else if(k==65)keyState.strafeLeft=1;
       else if(k==68)keyState.strafeRight=1;
       else if(k==87)keyState.forward=1;
       else if(k==83)keyState.backward=1;
       else if(k==32)keyState.jump=1;
+
 
       else if(k==48) game.hotbar.selected = 9; // number select, 0
       else if (k>=49 && k<=57) game.hotbar.selected = k - 49; // number select. 1-9
@@ -147,7 +149,8 @@ module.exports = {
     
     eL("keyup", e => {
       const k=e.keyCode;
-      if(k==65)keyState.strafeLeft=0;
+      if(k==16)keyState.shift=0;
+      else if(k==65)keyState.strafeLeft=0;
       else if(k==68)keyState.strafeRight=0;
       else if(k==87)keyState.forward=0;
       else if(k==83)keyState.backward=0;
@@ -173,12 +176,11 @@ module.exports = {
 
         // if not holding shift, then ignore lava and water
         if (
-          !keyState.shift
-          && (blockId == 9 || blockId == 10)
+          blockId == 9 || blockId == 10
         ) {
           
           // todo: stop ray at water if not in the water. dont let block destruction through water from outside (since its not transparent)
-          foundBlock = false;
+          foundBlock = keyState.shift;
         }
 
         if (foundBlock) {
