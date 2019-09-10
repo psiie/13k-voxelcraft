@@ -5,6 +5,8 @@ let isInside = false;
 let isInsideDebounce = false;
 let debounceLogging = false;
 
+const canvas = document.querySelector('#game');
+
 intervalSecond(() => {
   isInsideDebounce = false;
 });
@@ -98,6 +100,10 @@ function calcArcFromLength(step, length) {
   return percent;
 }
 
+function getCanvas() {
+  return canvas;
+}
+
 module.exports = {
   dlog: /*@__PURE__*/ dlog, // pure b/c it can be pruned. is not pure though
   drawAllTextures,
@@ -106,4 +112,5 @@ module.exports = {
   isInsideCheck: /*@__PURE__*/ isInsideCheck,
   calcArcFromLength: /*@__PURE__*/ calcArcFromLength,
   tryCatch: /*@__PURE__*/ tryCatch,
+  getCanvas: /*@__PURE__*/ getCanvas,
 };

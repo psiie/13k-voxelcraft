@@ -8,7 +8,8 @@ const keyState = {
   strafeLeft: 0,
   strafeRight: 0,
   jump: 0,
-  jumping: 0
+  jumping: 0,
+  shift: 0,
 };
 
 module.exports = {
@@ -155,7 +156,7 @@ module.exports = {
     
     eL("click", e => {
       const { player, hotbar } = window.game;
-      const { items, selected, side } = hotbar;
+      const { items } = hotbar;
       let rayX = player.x,
           rayY = player.y,
           rayZ = player.z;
@@ -168,7 +169,19 @@ module.exports = {
 
         // ray found a block
         const blockId = getBlock(rayX, rayY, rayZ);
-        if (blockId > 0) {
+        let foundBlock = blockId > 0;
+
+        // if not holding shift, then ignore lava and water
+        if (
+          !keyState.shift
+          && (blockId == 9 || blockId == 10)
+        ) {
+          
+          // todo: stop ray at water if not in the water. dont let block destruction through water from outside (since its not transparent)
+          foundBlock = false;
+        }
+
+        if (foundBlock) {
           
           if (/* left click */ e.button === 0) {
             map[rayX | 0][rayY | 0][rayZ | 0] = 0;

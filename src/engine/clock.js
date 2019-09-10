@@ -1,6 +1,6 @@
 import intervalSecond from './interval';
 import hotbar from '../hotbar';
-import utils from '../utils';
+// import utils from '../utils';
 const movement = require("../movement");
 const { render } = require("./render");
 
@@ -36,26 +36,26 @@ function checkAnimationFrameTime(time) {
   const requiredTimeDiff = 1000 / MAX_FPS;
   const diff = time - lastAnimatedTime;
 
-  if (diff < requiredTimeDiff) return requestAnimationFrame(checkAnimationFrameTime);
+  if (diff < requiredTimeDiff) return window.requestAnimationFrame(checkAnimationFrameTime);
 
   tick();
   lastAnimatedTime = time;
-  requestAnimationFrame(checkAnimationFrameTime);
+  window.requestAnimationFrame(checkAnimationFrameTime);
 }
 
 function init() {
   window._tick = 0; // debug purposes
 
-  const $fps = document.getElementById('fps');
+  const $fps = document.querySelector('.fps');
   intervalSecond(() => {
     const fps = window._tick;
     window.game.fps = fps;
-    $fps.innerText = fps.toString() + ' fps';
+    if ($fps) $fps.innerText = fps.toString() + ' fps';
     window._tick = 0;
   });
 
   if (!window.requestAnimationFrame) setInterval(tick, 1000 / 100);
-  else requestAnimationFrame(checkAnimationFrameTime);
+  else window.requestAnimationFrame(checkAnimationFrameTime);
 }
 
 module.exports = {

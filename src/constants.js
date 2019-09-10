@@ -6,9 +6,8 @@ module.exports = {
   To fill a 1280 (width) screen with a resolution of 4, what you want for width
   will be 1280/4=320. */
   RES: {
-    WIDTH: 320,
-    HEIGHT: 240,
-    SCALE: 2,
+    WIDTH: 320, // todo: can delete?
+    HEIGHT: 240, // still tied to hotbar placement
   },
 
   MAP_SIZE: 256,
@@ -41,5 +40,12 @@ module.exports = {
     15: [18, 9],
     16: [19, 9],
   },
+
+  LOCAL_STORAGE: [
+    '_mcm',
+    '_mcs',
+    '_mct',
+    '_mci',
+  ],
 
 };

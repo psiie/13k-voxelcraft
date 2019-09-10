@@ -3,9 +3,7 @@ import intervalSecond from './interval';
 import setPixelColor from './pixel';
 import { getBlock, calcArcFromLength } from '../utils';
 
-const RENDER_DISTANCE = 64;
-let scanlinesEnabled = false,
-    scanline = 0, // 0 or 1. determines startine line.
+let scanline = 0, // 0 or 1. determines startine line.
     waterAnimate = 0; // can simplify to bool to save space.
 
 intervalSecond(() => {
@@ -13,7 +11,7 @@ intervalSecond(() => {
 })
 
 function render() {
-  const { texmap, width, height, player, CONST, fps } = window.game;
+  const { texmap, width, height, player, CONST, fps, scanlinesEnabled, renderDistance } = window.game;
   
   // calculate camera rotation
   const yCos = Math.cos(player.pitch);
@@ -25,21 +23,24 @@ function render() {
   const playerOffsetY = player.y - (player.y | 0);
   const playerOffsetZ = player.z - (player.z | 0);
 
-  scanlinesEnabled = true;
   scanline = scanline ? 0 : 1; // fps saver
   for (let x = 0; x < width; x++) {
     // render distance
     const arcX = calcArcFromLength(x, width); // 0.0 - 1.0 float
-    const biasedArcX = RENDER_DISTANCE * arcX;
+    const biasedArcX = renderDistance * arcX;
     const worldxd = (x - width / 2) / height;
 
-    for (let y = scanlinesEnabled ? (x % 2)+scanline : 0; y < height; y += scanlinesEnabled ? 2 : 1) {
-      // render distance
+    for (
+      let y = scanlinesEnabled ? (x % 2) + scanline - 1 : 0;
+      y < height;
+      y += scanlinesEnabled ? 2 : 1
+    ) {
+
+      // render distance. create an arc so the center point isn't a straight line.
       const arcY = calcArcFromLength(y, height); // 0.0 - 1.0 float
-      const biasedArcY = RENDER_DISTANCE * arcY;
+      const biasedArcY = renderDistance * arcY;
       const arcAvg = (biasedArcX + biasedArcY) / 2;
-      let renderDistance = RENDER_DISTANCE + arcAvg;
-      if (fps < 30) renderDistance = renderDistance * (fps/30);
+      let renderDistanceArced = renderDistance + arcAvg;
 
       // pixel maths
       /*    worldzd */
@@ -88,7 +89,7 @@ function render() {
         // the ray
         let distance = ll * initial; // distance === 0-2
         const mapSize = CONST.MAP_SIZE - 1;
-        while (distance < renderDistance) {
+        while (distance < renderDistanceArced) {
           let texture = getBlock(xp & mapSize, yp & 63, zp & mapSize);
           if (zp > mapSize || yp > 63 || xp > mapSize || zp < 0 || yp < 0 || xp < 0) {
             texture = 0; // Only render the playable cube. Dont loop
@@ -115,17 +116,19 @@ function render() {
               // if water block, animate
               if (
                 dimension == 1
-                && (texture === 9 || texture === 10)
+                && (texture == 9 || texture == 10)
               ) {
                 /* only animate topside. prevents texture sliding into next texture.
-                the ternary is to save space. Basically lava, being the next texture, needs a diff cutoff point. */
+                the ternary is to save space. Basically lava, being the next texture,
+                needs a diff cutoff point. */
                 const texId = u + v * (waterAnimate+1)*16 + texture * 256 * 3;
-                if (texId < texture == 9 ? 7680 : 8680) col = texmap[texId];
+                if (texture == 9 && texId < 7680) col = texmap[texId];
+                else if (texture == 10 && texId < 8680) col = texmap[texId];
               }
               const timeModifier = time.timeModifier();
-              const distancePercent = 1 - (distance / RENDER_DISTANCE * timeModifier);
+              const distancePercent = 1 - (distance / renderDistance * timeModifier);
               brightness = (255 - (dimension + 2) % 3 * 50) * (distancePercent);
-              renderDistance = distance;
+              renderDistanceArced = distance;
             }
           }
 

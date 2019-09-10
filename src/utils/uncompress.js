@@ -54,6 +54,7 @@ function main() {
 
   // const seed = window.localStorage.get
   const compressed = localStorage.getItem('_mcm');
+  if (!compressed) return;
 
   const uncompressed = LZString.decompress(compressed);
   const mapStr = unMinify(uncompressed);

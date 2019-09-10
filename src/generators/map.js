@@ -1,7 +1,13 @@
 const { setBlock } = require('../utils');
 const mapDataType = require('./mapDataType');
 const Perlin = require("../vendor/perlin.skinny");
-const perlin = Perlin(421);
+
+let seed = localStorage.getItem('_mcs');
+if (!seed) {
+  localStorage.setItem('_mcs', Math.random() * Number.MAX_SAFE_INTEGER | 0);
+  window.location.reload();
+}
+const perlin = Perlin(seed);
 
 // using an object for faster lookup
 const ALLOWED_CAVE_GENERATE_OVER_BLOCKS = {
