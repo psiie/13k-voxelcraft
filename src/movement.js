@@ -130,7 +130,7 @@ module.exports = {
     });
 
     eL("keydown", e => {
-      console.log('e', e.keyCode)
+      e.preventDefault();
       const { game } = window;
       const k=e.keyCode;
       if(k==16)keyState.shift=1;
@@ -175,16 +175,9 @@ module.exports = {
         let foundBlock = blockId > 0;
 
         // if not holding shift, then ignore lava and water
-        if (
-          blockId == 9 || blockId == 10
-        ) {
-          
-          // todo: stop ray at water if not in the water. dont let block destruction through water from outside (since its not transparent)
-          foundBlock = keyState.shift;
-        }
+        if (blockId == 9 || blockId == 10) foundBlock = keyState.shift;
 
         if (foundBlock) {
-          
           if (/* left click */ e.button === 0) {
             map[rayX | 0][rayY | 0][rayZ | 0] = 0;
             inventoryAdd(blockId);

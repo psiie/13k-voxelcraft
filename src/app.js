@@ -37,7 +37,7 @@ window.game = {
   ctx: document.getElementById("game").getContext("2d"),
   fps: 0,
   scanlinesEnabled: true,
-  renderDistance: 64,
+  renderDistance: 32,
 };
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -80,11 +80,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const { game } = window;
     const { fps, scanlinesEnabled } = game || {};
 
-    if (!scanlinesEnabled && fps < 30) game.scanlinesEnabled = true;
-    else if (scanlinesEnabled && fps > 45) game.scanlinesEnabled = false;
+    // if (!scanlinesEnabled && fps < 30) game.scanlinesEnabled = true;
+    // else if (scanlinesEnabled && fps > 45) game.scanlinesEnabled = false;
 
-    // todo: 
-    if (fps < 45) game.renderDistance = 45;
+    // if (fps < 10) game.renderDistance = 10;
+    // else if (fps < 20) game.renderDistance = 20;
+    // else if (fps > 40) game.renderDistance = 40;
+
     // if (fps < 30) renderDistance = renderDistance * (fps/30);
   });
 
@@ -103,6 +105,15 @@ document.addEventListener('DOMContentLoaded', () => {
       case 'load':
         window.location.reload();
         break;
+      case 'plus':
+        game.renderDistance += 5;
+        break;
+      case 'minus':
+        game.renderDistance -= 5;
+        break;
+      case 'interlace':
+        setTimeout(() => game.scanlinesEnabled = !game.scanlinesEnabled, 1);
+        break;
       case 'newseeed':
         generateNewSeed = confirm("Generate a new seed? This will erase your current save.");
         if (generateNewSeed) {
@@ -111,5 +122,8 @@ document.addEventListener('DOMContentLoaded', () => {
           window.location.reload();
         }
     }
+
+    if (game.renderDistance < 5) game.renderDistance = 5;
+    else if (game.renderDistance > 255) game.renderDistance = 255;
   });
 });

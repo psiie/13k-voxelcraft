@@ -1,5 +1,6 @@
 import intervalSecond from './interval';
 import hotbar from '../hotbar';
+import drawReticule from './reticule';
 // import utils from '../utils';
 const movement = require("../movement");
 const { render } = require("./render");
@@ -28,6 +29,7 @@ function tick() {
   // --- postdraw --- ///
   hotbar.drawHotbarBorder(); // postdraw
   hotbar.drawIconNumers();
+  drawReticule();
 }
 
 /* on supported browsers, use requestAnimationFrame for optimizations */
