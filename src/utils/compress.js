@@ -1,6 +1,7 @@
 import { unMinify } from './uncompress';
 import { getTime } from '../engine/time';
 import generators from '../generators';
+import localStorageWrapper from '../engine/localStorage';
 const LZString = require('../vendor/lz-string.orig');
 
 /*  ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O",
@@ -61,10 +62,10 @@ function minifyRepeats(str) {
 }
 
 function main() {
-  const { localStorage, game } = window;
-  localStorage.setItem('_mct', getTime());
+  const { game } = window;
+  localStorageWrapper.safeSet('_mct', getTime());
   // save inventory. will probably move to a better file location
-  localStorage.setItem('_mci', JSON.stringify(game.hotbar.items));
+  localStorageWrapper.safeSet('_mci', JSON.stringify(game.hotbar.items));
 
   const mapStr = /*@__PURE__*/ mapArrToString();
   console.log('saving mapStr length', mapStr.length)
@@ -74,7 +75,7 @@ function main() {
   console.log('minified', mapStrMinified.length, mapStrMinified);
   console.log('compressed', compressed.length, compressed);
 
-  localStorage.setItem('_mcm', compressed);
+  localStorageWrapper.safeSet('_mcm', compressed);
 
   // verify save
   const uncompressed = LZString.decompress(compressed);

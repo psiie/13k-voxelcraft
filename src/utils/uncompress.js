@@ -1,5 +1,6 @@
 import { tryCatch } from './index';
 import { setTime } from '../engine/time';
+import localStorageWrapper from '../engine/localStorage';
 const LZString = require('../vendor/lz-string');
 
 /*  ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O",
@@ -45,15 +46,15 @@ function unMinify(str) {
 }
 
 function main() {
-  const { localStorage, game } = window;
+  const { game } = window;
   // load items from save
-  const time = localStorage.getItem('_mct');
-  const itemsFromSave = tryCatch(() => JSON.parse(localStorage.getItem('_mci')));
+  const time = localStorageWrapper.safeGet('_mct');
+  const itemsFromSave = tryCatch(() => JSON.parse(localStorageWrapper.safeGet('_mci')));
   if (itemsFromSave) game.hotbar.items = itemsFromSave.map(item => item === null ? Infinity : item);
   if (time) setTime(time);
 
   // const seed = window.localStorage.get
-  const compressed = localStorage.getItem('_mcm');
+  const compressed = localStorageWrapper.safeGet('_mcm');
   if (!compressed) return;
 
   const uncompressed = LZString.decompress(compressed);

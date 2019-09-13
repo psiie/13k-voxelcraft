@@ -1,10 +1,16 @@
+import localStorageWrapper from '../engine/localStorage';
 const { setBlock } = require('../utils');
 const mapDataType = require('./mapDataType');
 const Perlin = require("../vendor/perlin.skinny");
 
-let seed = localStorage.getItem('_mcs');
-if (!seed) {
-  localStorage.setItem('_mcs', Math.random() * Number.MAX_SAFE_INTEGER | 0);
+const localStorageExists = localStorageWrapper.exits();
+let seed = localStorageWrapper.safeGet('_mcs');
+
+if (!localStorageExists) {
+  seed = 0;
+  console.log('no localstorage. Using seed "0". No saving permitted')
+} else if (!seed) {
+  localStorageWrapper.safeSet('_mcs', Math.random() * Number.MAX_SAFE_INTEGER | 0);
   window.location.reload();
 }
 const perlin = Perlin(seed);

@@ -3,6 +3,7 @@ import uncompress from './utils/uncompress';
 import { getTime, setTime } from './engine/time';
 import intervalSecond from './engine/interval';
 import { getCanvas } from './utils';
+import localStorageWrapper from './engine/localStorage';
 const movement = require("./movement");
 const generators = require('./generators');
 const engine = require('./engine');
@@ -118,7 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
         generateNewSeed = confirm("Generate a new seed? This will erase your current save.");
         if (generateNewSeed) {
           CONST.LOCAL_STORAGE.forEach(i => localStorage.removeItem(i));
-          localStorage.setItem('_mcs', Math.random() * Number.MAX_SAFE_INTEGER | 0);
+          localStorageWrapper.safeSet('_mcs', Math.random() * Number.MAX_SAFE_INTEGER | 0);
           window.location.reload();
         }
     }
