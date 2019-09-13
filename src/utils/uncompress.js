@@ -1,7 +1,7 @@
 import { tryCatch } from './index';
 import { setTime } from '../engine/time';
 import localStorageWrapper from '../engine/localStorage';
-const LZString = require('../vendor/lz-string');
+const LZString = require('../vendor/lz-string.orig');
 
 /*  ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O",
 "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "[", "\", "]", "^", "_",

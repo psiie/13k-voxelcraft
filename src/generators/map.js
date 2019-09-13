@@ -8,7 +8,8 @@ let seed = localStorageWrapper.safeGet('_mcs');
 
 if (!localStorageExists) {
   seed = 0;
-  console.log('no localstorage. Using seed "0". No saving permitted')
+  document.querySelector('.nosaving').classList.toggle('show');
+  console.log('no localstorage. Using seed "0". No saving permitted'); // eslint-disable-line no-console
 } else if (!seed) {
   localStorageWrapper.safeSet('_mcs', Math.random() * Number.MAX_SAFE_INTEGER | 0);
   window.location.reload();

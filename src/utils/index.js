@@ -25,7 +25,6 @@ function tryCatch(fn) {
   try {
     out = fn();
   } catch(e) {
-    console.log('catch', e)
     out = null;
   }
   
